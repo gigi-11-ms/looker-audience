@@ -1,4 +1,3 @@
-
 project_name: "audience-app"
 
 application: audience-app {

@@ -15,8 +15,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 if (!process.env.POSTS_SERVER_URL) {
   // webpack 5 is stricter about environment variables. The POSTS_SERVER_URL
   // environment variable was not mentioned in the README so default it for
@@ -58,4 +58,3 @@ module.exports = {
     }),
   ],
 };
-

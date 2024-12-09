@@ -16,6 +16,7 @@ import {
 import Layout from "./layout";
 import {
   AUDIENCES_PAGE,
+  CREATE_AUDIENCE_EXPLORE_PAGE,
   CREATE_AUDIENCE_PAGE,
   MONITORING_PAGE,
   SCHEDULED_TASKS_PAGE,
@@ -23,12 +24,13 @@ import {
 } from "./routes/config";
 
 // Pages
-import Audiences from "./pages/Audiences";
+import AudiencesPage from "./pages/Audiences";
 import ErrorPage from "./pages/ErrorPage";
-import Templates from "./pages/Templates";
-import ScheduledTasks from "./pages/ScheduledTasks";
-import Monitoring from "./pages/Monitoring";
+import TemplatesPage from "./pages/Templates";
+import ScheduledTasksPage from "./pages/ScheduledTasks";
+import MonitoringPage from "./pages/Monitoring";
 import CreateAudiencePage from "./pages/CreateAudience";
+import CreateAudienceExplorePage from "./pages/CreateAudienceExplore";
 
 // TODO: fix ts error for router
 export const App = hot(() => {
@@ -42,18 +44,27 @@ export const App = hot(() => {
                 <Route path="/" exact>
                   <Redirect to={AUDIENCES_PAGE} />
                 </Route>
-                <Route path={AUDIENCES_PAGE} exact component={Audiences} />
-                <Route path={TEMPLATES_PAGE} exact component={Templates} />
+                <Route path={AUDIENCES_PAGE} exact component={AudiencesPage} />
+                <Route path={TEMPLATES_PAGE} exact component={TemplatesPage} />
                 <Route
                   path={SCHEDULED_TASKS_PAGE}
                   exact
-                  component={ScheduledTasks}
+                  component={ScheduledTasksPage}
                 />
-                <Route path={MONITORING_PAGE} exact component={Monitoring} />
+                <Route
+                  path={MONITORING_PAGE}
+                  exact
+                  component={MonitoringPage}
+                />
                 <Route
                   path={CREATE_AUDIENCE_PAGE}
                   exact
                   component={CreateAudiencePage}
+                />
+                <Route
+                  path={CREATE_AUDIENCE_EXPLORE_PAGE}
+                  exact
+                  component={CreateAudienceExplorePage}
                 />
                 <Route component={ErrorPage} />
               </Switch>

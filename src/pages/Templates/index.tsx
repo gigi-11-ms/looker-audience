@@ -1,10 +1,13 @@
 import React from "react";
 import PageTemplate from "../../templates/PageTemplate";
+import { Space, Span } from "@looker/components";
 
 const Templates = () => {
   return (
     <PageTemplate>
-      <div>Templates</div>
+      <Space around>
+        <Span fontSize="xxxxxlarge">Templates</Span>
+      </Space>
     </PageTemplate>
   );
 };

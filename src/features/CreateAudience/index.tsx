@@ -11,9 +11,11 @@ import {
 import React from "react";
 import useModels from "./useModels";
 import InfoBox from "../../components/InfoBox";
+import { useHistory } from "react-router-dom";
 
 const CreateAudience = () => {
   const { data, isLoading } = useModels();
+  const history = useHistory();
 
   if (isLoading)
     return (
@@ -33,20 +35,22 @@ const CreateAudience = () => {
           p={8}
         >
           <TreeCollection>
-            {data?.map(({ label, explores, name }, i) => (
+            {data?.map(({ label, explores, name: modelName }, i) => (
               <LkFieldTree
                 label={<strong>{label}</strong>}
                 defaultOpen
-                key={name}
+                key={modelName}
               >
-                {explores?.map(({ name, description }) => (
+                {explores?.map(({ name, description, label }) => (
                   <LkFieldItem
                     detail={<InfoBox description={description} />}
                     style={{ cursor: "pointer" }}
                     key={name}
-                    onClick={() => console.log("explore: ", name)}
+                    onClick={() =>
+                      history.push(`/audience/create/${modelName}/${name}`)
+                    }
                   >
-                    <Span>{name}</Span>
+                    <Span>{label}</Span>
                   </LkFieldItem>
                 ))}
               </LkFieldTree>

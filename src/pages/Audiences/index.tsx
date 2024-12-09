@@ -14,7 +14,7 @@ const Audiences: FC = () => {
   return (
     <PageTemplate>
       <Space around>
-        <Span fontSize="xxxxxlarge">{data?.display_name}</Span>
+        <Span fontSize="xxxxxlarge">Hello, {data?.display_name}</Span>
       </Space>
     </PageTemplate>
   );

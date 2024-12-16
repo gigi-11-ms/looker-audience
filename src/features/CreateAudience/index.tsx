@@ -19,8 +19,8 @@ const CreateAudience = () => {
 
   if (isLoading)
     return (
-      <Space around>
-        <Spinner />
+      <Space around height={"100%"}>
+        <Spinner color={"rgb(108, 67, 224)"} size={60} />
       </Space>
     );
 
@@ -57,7 +57,11 @@ const CreateAudience = () => {
             ))}
           </TreeCollection>
         </Box>
-        <Box flex={7}>Recently Viewed</Box>
+        <Box flex={7}>
+          <Space around height={"100%"}>
+            <Span fontSize={"xlarge"}>Instructions or some guide</Span>
+          </Space>
+        </Box>
       </Space>
     </SpaceVertical>
   );

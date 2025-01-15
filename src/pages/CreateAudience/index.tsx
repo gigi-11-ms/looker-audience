@@ -6,7 +6,7 @@ import EmbeddedDashboard from "../../components/EmbeddedDashboard";
 const CreateAudiencePage = () => (
   <PageTemplate>
     {/* <CreateAudience /> */}
-    <EmbeddedDashboard dashboardId="45" />
+    <EmbeddedDashboard dashboardId="172" />
   </PageTemplate>
 );
 

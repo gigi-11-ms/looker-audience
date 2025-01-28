@@ -6,15 +6,17 @@ import {
   DataTableItem,
   DateFormat,
   doDataTableSort,
-  Span,
 } from "@looker/components";
 import { ILookWithDashboards } from "@looker/sdk";
 import React, { FC, useState } from "react";
+import { openModal, useModalContext } from "../../context/ModalContext";
+import RunAction from "../Actions/RunAction";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,
 }) => {
   const [data, setData] = useState(tableData);
+  const { dispatch } = useModalContext();
 
   const [columns, setColumns] = useState<DataTableColumns>([
     {
@@ -59,14 +61,16 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   };
 
   const items = data.map(
-    ({ id, title, updated_at, model: { label: modelLabel } = {} }) => {
+    ({ id = "", title, updated_at, model: { label: modelLabel } = {} }) => {
       const updatedAt = new Date(updated_at || 0);
       const actions = (
         <>
-          <DataTableAction onClick={() => console.log(id, "edit")}>
+          <DataTableAction onClick={() => console.log("edit")}>
             Edit
           </DataTableAction>
-          <DataTableAction onClick={() => console.log(id, "send")}>
+          <DataTableAction
+            onClick={() => openModal(dispatch, <RunAction lookId={id} />)}
+          >
             Send
           </DataTableAction>
           <DataTableAction onClick={() => console.log(id, "add schedule")}>

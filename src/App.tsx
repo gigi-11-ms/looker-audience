@@ -31,6 +31,7 @@ import ScheduledTasksPage from "./pages/ScheduledTasks";
 import MonitoringPage from "./pages/Monitoring";
 import CreateAudiencePage from "./pages/CreateAudience";
 import CreateAudienceExplorePage from "./pages/CreateAudienceExplore";
+import ModalContextProvider from "./context/ModalContext";
 
 // TODO: fix ts error for router
 export const App = hot(() => {
@@ -38,38 +39,48 @@ export const App = hot(() => {
     <ExtensionProvider>
       <QueryClientProvider client={queryClient}>
         <ComponentsProvider loadGoogleFonts resources={i18nResources}>
-          <Router>
-            <Layout>
-              <Switch>
-                <Route path="/" exact>
-                  <Redirect to={AUDIENCES_PAGE} />
-                </Route>
-                <Route path={AUDIENCES_PAGE} exact component={AudiencesPage} />
-                <Route path={TEMPLATES_PAGE} exact component={TemplatesPage} />
-                <Route
-                  path={SCHEDULED_TASKS_PAGE}
-                  exact
-                  component={ScheduledTasksPage}
-                />
-                <Route
-                  path={MONITORING_PAGE}
-                  exact
-                  component={MonitoringPage}
-                />
-                <Route
-                  path={CREATE_AUDIENCE_PAGE}
-                  exact
-                  component={CreateAudiencePage}
-                />
-                <Route
-                  path={CREATE_AUDIENCE_EXPLORE_PAGE}
-                  exact
-                  component={CreateAudienceExplorePage}
-                />
-                <Route component={ErrorPage} />
-              </Switch>
-            </Layout>
-          </Router>
+          <ModalContextProvider>
+            <Router>
+              <Layout>
+                <Switch>
+                  <Route path="/" exact>
+                    <Redirect to={AUDIENCES_PAGE} />
+                  </Route>
+                  <Route
+                    path={AUDIENCES_PAGE}
+                    exact
+                    component={AudiencesPage}
+                  />
+                  <Route
+                    path={TEMPLATES_PAGE}
+                    exact
+                    component={TemplatesPage}
+                  />
+                  <Route
+                    path={SCHEDULED_TASKS_PAGE}
+                    exact
+                    component={ScheduledTasksPage}
+                  />
+                  <Route
+                    path={MONITORING_PAGE}
+                    exact
+                    component={MonitoringPage}
+                  />
+                  <Route
+                    path={CREATE_AUDIENCE_PAGE}
+                    exact
+                    component={CreateAudiencePage}
+                  />
+                  <Route
+                    path={CREATE_AUDIENCE_EXPLORE_PAGE}
+                    exact
+                    component={CreateAudienceExplorePage}
+                  />
+                  <Route component={ErrorPage} />
+                </Switch>
+              </Layout>
+            </Router>
+          </ModalContextProvider>
         </ComponentsProvider>
       </QueryClientProvider>
     </ExtensionProvider>

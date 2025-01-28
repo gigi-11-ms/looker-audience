@@ -13,16 +13,17 @@
     "prebuild": "yarn clean"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
     "@looker/components": "^4.0.4",
     "@looker/embed-sdk": "^1.8.0",
     "@looker/extension-sdk": "^22.20.0",
     "@looker/extension-sdk-react": "^22.20.0",
-    "@looker/visualizations": "^1.1.4",
-    "@looker/visualizations-adapters": "^1.0.3",
     "@looker/filter-components": "^1.0.3",
     "@looker/icons": "^1.5.21",
     "@looker/sdk": "^22.20.0",
     "@looker/sdk-rtl": "^21.4.0",
+    "@looker/visualizations": "^1.1.4",
+    "@looker/visualizations-adapters": "^1.0.3",
     "@styled-icons/material": "10.34.0",
     "@styled-icons/material-outlined": "10.34.0",
     "@styled-icons/material-rounded": "10.34.0",
@@ -31,12 +32,14 @@
     "nuqs": "^2.2.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
     "react-is": "^16.13.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^5.3.0",
     "semver": "^7.3.5",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.0",

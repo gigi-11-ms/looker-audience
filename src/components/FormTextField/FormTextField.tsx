@@ -1,5 +1,10 @@
 import React, { ChangeEvent, FC } from "react";
-import { FloatingLabelField, InputText } from "@looker/components";
+import {
+  Box,
+  FloatingLabelField,
+  InputText,
+  SpaceVertical,
+} from "@looker/components";
 import { Controller, useFormContext } from "react-hook-form";
 
 type FormTextFieldType = {
@@ -15,7 +20,7 @@ const FormTextField: FC<FormTextFieldType> = ({ name, disabled, label }) => {
       name={name}
       control={control}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <>
+        <SpaceVertical gap={"xxxsmall"}>
           {label ? (
             <FloatingLabelField
               validationMessage={{ ...(error ? { type: "error" } : {}) }}
@@ -31,7 +36,7 @@ const FormTextField: FC<FormTextFieldType> = ({ name, disabled, label }) => {
             }
             disabled={disabled}
           />
-        </>
+        </SpaceVertical>
       )}
     />
   );

@@ -1,37 +1,54 @@
-import { Button, ButtonTransparent, DialogLayout } from "@looker/components";
-import React, { FC, useEffect } from "react";
+import {
+  Button,
+  ButtonTransparent,
+  DialogLayout,
+  Space,
+  SpaceVertical,
+  Spinner,
+} from "@looker/components";
+import React, { FC, useCallback, useEffect } from "react";
 import { closeModal, useModalContext } from "../../../context/ModalContext";
-import { GOOGLE_DRIVE_INTEGRATION_ID } from "../../../constants";
+import {
+  GOOGLE_DRIVE_INTEGRATION_ID,
+  LOOKER_INTEGRATION,
+} from "../../../constants";
 import useIntegration from "../useIntegration";
 import useIntegrationForm from "../useIntegrationForm";
 import { FormProvider, useForm } from "react-hook-form";
 import FormTextField from "../../../components/FormTextField/FormTextField";
 import { zodResolver } from "@hookform/resolvers/zod";
-import FormSelect from "../../../components/FormSelect/FormSelect";
 import getIntegrationFormSchema from "./integrationFormSchema";
 import { z } from "zod";
+import IntegrationForm from "../IntegrationForm";
+import useRunOneTimeAction from "../useRunOneTimeAction";
 
 interface RunActionProps {
   lookId: string;
+  title: string;
 }
 
-type ActionFormSchemaType = z.infer<
+export type ActionFormType = z.infer<
   ReturnType<typeof getIntegrationFormSchema>
 >;
 
-const RunAction: FC<RunActionProps> = ({ lookId }) => {
+const RunAction: FC<RunActionProps> = ({ lookId, title }) => {
   const { dispatch } = useModalContext();
   const { data: integrationData } = useIntegration(GOOGLE_DRIVE_INTEGRATION_ID);
-  const { data: integrationFormData, mutate } = useIntegrationForm();
+  const {
+    data: integrationFormData,
+    mutate,
+    isLoading: integrationFormLoading,
+  } = useIntegrationForm();
+  const { mutate: runOneTimeAction } = useRunOneTimeAction();
 
-  const methods = useForm<ActionFormSchemaType>({
-    resolver: zodResolver(
-      getIntegrationFormSchema(integrationFormData?.fields)
-    ),
+  const { fields: integrationFormFields } = integrationFormData || {};
+
+  const methods = useForm<ActionFormType>({
+    resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
     defaultValues: {
-      title: "",
-      provider: "",
-      formatDataAs: "",
+      title,
+      provider: "1::google_drive", // temp
+      formatDataAs: "json", // temp
       integrationForm: {},
     },
     mode: "onChange",
@@ -39,18 +56,31 @@ const RunAction: FC<RunActionProps> = ({ lookId }) => {
   const { handleSubmit, getValues, reset } = methods;
 
   useEffect(() => {
-    mutate(GOOGLE_DRIVE_INTEGRATION_ID, {
-      onSuccess: (data) => {
-        const { fields } = data;
-        const formFields = fields?.reduce((acc, curr) => {
-          const { name } = curr;
-          return { ...acc, [name || ""]: curr.default || "" };
-        }, {});
+    mutate(
+      { integrationId: GOOGLE_DRIVE_INTEGRATION_ID },
+      {
+        onSuccess: (data) => {
+          const { fields } = data;
+          const formFields = fields?.reduce((acc, curr) => {
+            const { name } = curr;
+            return { ...acc, [name || ""]: curr.default || "" };
+          }, {});
 
-        reset({ ...getValues(), integrationForm: formFields });
-      },
-    });
+          reset({ ...getValues(), integrationForm: formFields });
+        },
+      }
+    );
   }, []);
+
+  const renderIntegrationForm = useCallback(
+    () =>
+      integrationFormLoading ? (
+        <Spinner />
+      ) : integrationFormFields ? (
+        <IntegrationForm fields={integrationFormFields} mutate={mutate} />
+      ) : null,
+    [integrationFormLoading, integrationFormFields]
+  );
 
   return (
     <DialogLayout
@@ -59,8 +89,23 @@ const RunAction: FC<RunActionProps> = ({ lookId }) => {
         <>
           <Button
             onClick={() => {
-              const integrationFormData = getValues();
-              console.log("run", lookId, integrationFormData);
+              handleSubmit((data) => {
+                const { title, integrationForm, formatDataAs, provider } = data;
+                runOneTimeAction({
+                  lookId,
+                  name: title,
+                  scheduledPlanDestination: [
+                    {
+                      format: formatDataAs,
+                      address: "",
+                      apply_formatting: true,
+                      apply_vis: true,
+                      type: LOOKER_INTEGRATION + provider,
+                      parameters: JSON.stringify(integrationForm),
+                    },
+                  ],
+                });
+              })();
             }}
           >
             Run
@@ -75,18 +120,11 @@ const RunAction: FC<RunActionProps> = ({ lookId }) => {
       }
     >
       <FormProvider {...methods}>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
-          <FormTextField name="title" label="test" />
-          <FormSelect
-            name="integrationForm.drive"
-            label="Drive"
-            options={[
-              { value: "test", label: "Test" },
-              { value: "test2", label: "Test2" },
-            ]}
-          />
-          <FormTextField name="integrationForm.filename" label="File Name" />
-          <FormTextField name="integrationForm.folderid" label="Folder Id" />
+        <form>
+          <SpaceVertical gap="small">
+            <FormTextField name="title" label="Give your schedule a name." />
+            {renderIntegrationForm()}
+          </SpaceVertical>
         </form>
       </FormProvider>
     </DialogLayout>

@@ -1,14 +1,16 @@
 import React, { FC } from "react";
-import { FloatingLabelField, Select } from "@looker/components";
+import { FloatingLabelField, Select, SpaceVertical } from "@looker/components";
 import { Controller, useFormContext } from "react-hook-form";
 
-type FormOptionType = { value: string; label: string };
+export type FormOptionType = { value: string; label: string };
 
-type FormSelectFieldType = {
+export type FormSelectFieldType = {
   name: string;
   label?: string;
   disabled?: boolean;
   options: FormOptionType[];
+  onChange?: (value: string) => void;
+  placeholder?: string;
 };
 
 const FormSelect: FC<FormSelectFieldType> = ({
@@ -16,14 +18,19 @@ const FormSelect: FC<FormSelectFieldType> = ({
   disabled,
   label,
   options,
+  onChange,
+  placeholder,
 }) => {
   const { control } = useFormContext();
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange, value }, fieldState: { error } }) => (
-        <>
+      render={({
+        field: { onChange: hfOnchange, value },
+        fieldState: { error },
+      }) => (
+        <SpaceVertical gap="xxxsmall">
           {label ? (
             <FloatingLabelField
               validationMessage={{ ...(error ? { type: "error" } : {}) }}
@@ -33,12 +40,16 @@ const FormSelect: FC<FormSelectFieldType> = ({
           ) : null}
           <Select
             value={value}
-            onChange={onChange}
+            onChange={(value: string) => {
+              hfOnchange(value);
+              onChange?.(value);
+            }}
             disabled={disabled}
             options={options}
             validationType={error ? "error" : ""}
+            placeholder={placeholder}
           />
-        </>
+        </SpaceVertical>
       )}
     />
   );

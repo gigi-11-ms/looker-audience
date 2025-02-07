@@ -1,15 +1,13 @@
 import React from "react";
 import PageTemplate from "../../templates/PageTemplate";
-import { Space, Span } from "@looker/components";
+import Monitoring from "../../features/Monitoring";
 
-const Monitoring = () => {
+const MonitoringPage = () => {
   return (
     <PageTemplate>
-      <Space around>
-        <Span fontSize="xxxxxlarge">Monitoring</Span>
-      </Space>
+      <Monitoring />
     </PageTemplate>
   );
 };
 
-export default Monitoring;
+export default MonitoringPage;

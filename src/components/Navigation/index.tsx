@@ -27,7 +27,7 @@ const NavigationElements: NavItemType[] = [
     path: TEMPLATES_PAGE,
   },
   {
-    name: "Schedulet Tasks",
+    name: "Scheduled Tasks",
     path: SCHEDULED_TASKS_PAGE,
   },
   {

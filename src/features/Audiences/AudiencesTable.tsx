@@ -10,7 +10,7 @@ import {
 import { ILookWithDashboards } from "@looker/sdk";
 import React, { FC, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
-import RunAction from "../Actions/RunAction";
+import ActionSnapshots from "../Actions/ActionSnapshots";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,
@@ -71,7 +71,10 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
           </DataTableAction>
           <DataTableAction
             onClick={() =>
-              openModal(dispatch, <RunAction lookId={id} title={lookTitle} />)
+              openModal(
+                dispatch,
+                <ActionSnapshots lookId={id} title={lookTitle} />
+              )
             }
           >
             Send

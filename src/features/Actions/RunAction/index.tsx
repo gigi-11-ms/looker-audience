@@ -2,7 +2,6 @@ import {
   Button,
   ButtonTransparent,
   DialogLayout,
-  Space,
   SpaceVertical,
   Spinner,
 } from "@looker/components";
@@ -21,17 +20,20 @@ import getIntegrationFormSchema from "./integrationFormSchema";
 import { z } from "zod";
 import IntegrationForm from "../IntegrationForm";
 import useRunOneTimeAction from "../useRunOneTimeAction";
+import useSaveSnapshot from "../useSaveSnapshot";
+import { toast } from "react-toastify";
 
 interface RunActionProps {
-  lookId: string;
   title: string;
+  lookId: string;
+  queryId?: string;
 }
 
 export type ActionFormType = z.infer<
   ReturnType<typeof getIntegrationFormSchema>
 >;
 
-const RunAction: FC<RunActionProps> = ({ lookId, title }) => {
+const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
   const { dispatch } = useModalContext();
   const { data: integrationData } = useIntegration(GOOGLE_DRIVE_INTEGRATION_ID);
   const {
@@ -39,9 +41,13 @@ const RunAction: FC<RunActionProps> = ({ lookId, title }) => {
     mutate,
     isLoading: integrationFormLoading,
   } = useIntegrationForm();
-  const { mutate: runOneTimeAction } = useRunOneTimeAction();
 
   const { fields: integrationFormFields } = integrationFormData || {};
+
+  const { mutate: runOneTimeAction, isLoading: isActionRunLoading } =
+    useRunOneTimeAction();
+  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
+    useSaveSnapshot();
 
   const methods = useForm<ActionFormType>({
     resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
@@ -82,29 +88,61 @@ const RunAction: FC<RunActionProps> = ({ lookId, title }) => {
     [integrationFormLoading, integrationFormFields]
   );
 
+  const handleRunAction = useCallback(
+    ({
+      formatDataAs,
+      integrationForm,
+      provider,
+      lookId,
+      queryId,
+    }: ActionFormType & { queryId?: string; lookId?: string }) => {
+      runOneTimeAction(
+        {
+          queryId,
+          lookId,
+          name: title,
+          scheduledPlanDestination: [
+            {
+              format: formatDataAs,
+              address: "",
+              apply_formatting: true,
+              apply_vis: true,
+              type: LOOKER_INTEGRATION + provider,
+              parameters: JSON.stringify(integrationForm),
+            },
+          ],
+        },
+        {
+          onSuccess: () => {
+            toast.success("Audience Sent!");
+          },
+          onError: () => {
+            toast.error("Something went wrong");
+          },
+          onSettled: () => {
+            closeModal(dispatch);
+          },
+        }
+      );
+    },
+    []
+  );
+
+  const handleSaveSnapshot = useCallback((lookId: string) => {
+    saveSnapshot(lookId);
+  }, []);
+
   return (
     <DialogLayout
       header="Run Action"
       footer={
         <>
           <Button
+            disabled={isActionRunLoading || isSnapshotSaveLoading}
             onClick={() => {
               handleSubmit((data) => {
-                const { title, integrationForm, formatDataAs, provider } = data;
-                runOneTimeAction({
-                  lookId,
-                  name: title,
-                  scheduledPlanDestination: [
-                    {
-                      format: formatDataAs,
-                      address: "",
-                      apply_formatting: true,
-                      apply_vis: true,
-                      type: LOOKER_INTEGRATION + provider,
-                      parameters: JSON.stringify(integrationForm),
-                    },
-                  ],
-                });
+                handleRunAction({ ...data, lookId, queryId });
+                handleSaveSnapshot(lookId);
               })();
             }}
           >

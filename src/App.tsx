@@ -33,6 +33,9 @@ import CreateAudiencePage from "./pages/CreateAudience";
 import CreateAudienceExplorePage from "./pages/CreateAudienceExplore";
 import ModalContextProvider from "./context/ModalContext";
 
+import "react-toastify/dist/ReactToastify.min.css";
+import { ToastContainer } from "react-toastify";
+
 // TODO: fix ts error for router
 export const App = hot(() => {
   return (
@@ -40,6 +43,7 @@ export const App = hot(() => {
       <QueryClientProvider client={queryClient}>
         <ComponentsProvider loadGoogleFonts resources={i18nResources}>
           <ModalContextProvider>
+            <ToastContainer />
             <Router>
               <Layout>
                 <Switch>

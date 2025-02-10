@@ -5,7 +5,8 @@ import { IScheduledPlanDestination } from "@looker/sdk";
 
 export type IntegrationMutationParams = {
   name: string;
-  lookId: string;
+  lookId?: string;
+  queryId?: string;
   scheduledPlanDestination: IScheduledPlanDestination[];
 };
 
@@ -17,11 +18,13 @@ const useRunOneTimeAction = () => {
       name,
       scheduledPlanDestination,
       lookId,
+      queryId,
     }: IntegrationMutationParams) =>
       core40SDK.ok(
         core40SDK.scheduled_plan_run_once({
           name,
-          look_id: lookId,
+          ...(lookId ? { look_id: lookId } : {}),
+          ...(queryId ? { query_id: queryId } : {}),
           send_all_results: false,
           require_change: false,
           require_no_results: false,

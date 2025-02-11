@@ -9,5 +9,6 @@ application: audience-app {
     use_embeds: yes
     use_iframes: yes
     use_form_submit: yes
+    external_api_urls : ["https://europe-west1-ms-gauss-pixel.cloudfunctions.net"]
   }
 }

@@ -10,7 +10,7 @@ import {
 import { ILookWithDashboards } from "@looker/sdk";
 import React, { FC, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
-import RunAction from "../Actions/RunAction";
+import ActionSnapshots from "../Actions/ActionSnapshots";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,
@@ -63,13 +63,19 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   const items = data.map(
     ({ id = "", title, updated_at, model: { label: modelLabel } = {} }) => {
       const updatedAt = new Date(updated_at || 0);
+      const lookTitle = title || "";
       const actions = (
         <>
           <DataTableAction onClick={() => console.log("edit")}>
             Edit
           </DataTableAction>
           <DataTableAction
-            onClick={() => openModal(dispatch, <RunAction lookId={id} />)}
+            onClick={() =>
+              openModal(
+                dispatch,
+                <ActionSnapshots lookId={id} title={lookTitle} />
+              )
+            }
           >
             Send
           </DataTableAction>

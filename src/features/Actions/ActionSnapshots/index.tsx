@@ -15,7 +15,6 @@ import {
 
 import useSnapshots from "../useSnapshots";
 import RunAction from "../RunAction";
-// import useSnapshot from "../useSnapshot";
 import { FormOptionType } from "../../../components/FormSelect/FormSelect";
 
 interface RunActionProps {
@@ -32,12 +31,6 @@ const ActionSnapshots: FC<RunActionProps> = ({ lookId, title }) => {
     isError: isSnapshotsError,
   } = useSnapshots(lookId);
 
-  // const { data: snapshotData, isLoading: isSnapshotLoading } = useSnapshot(
-  //   snapshotId,
-  //   lookId
-  // );
-
-  // const { queryId } = snapshotData || {};
   const snapshotSelectOptions = useMemo<FormOptionType[]>(
     () =>
       snapshotsData?.map(({ created_at: createdAt, query_id: queryId }) => ({

@@ -6,7 +6,7 @@ import {
   Space,
   SpaceVertical,
 } from "@looker/components";
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import {
   closeModal,
   openModal,
@@ -14,10 +14,9 @@ import {
 } from "../../../context/ModalContext";
 
 import useSnapshots from "../useSnapshots";
-import useRunOneTimeAction from "../useRunOneTimeAction";
-import useSaveSnapshot from "../useSaveSnapshot";
 import RunAction from "../RunAction";
-import useSnapshot from "../useSnapshot";
+// import useSnapshot from "../useSnapshot";
+import { FormOptionType } from "../../../components/FormSelect/FormSelect";
 
 interface RunActionProps {
   lookId: string;
@@ -26,18 +25,27 @@ interface RunActionProps {
 
 const ActionSnapshots: FC<RunActionProps> = ({ lookId, title }) => {
   const { dispatch } = useModalContext();
-  const [snapshotId, setSnapshotId] = useState<string>();
-  const { data, isLoading, isError } = useSnapshots(lookId);
+  const [queryId, setQueryId] = useState<string>();
+  const {
+    data: snapshotsData,
+    isLoading: isSnapshotsLoading,
+    isError: isSnapshotsError,
+  } = useSnapshots(lookId);
 
-  const { mutate: runOneTimeAction, isLoading: isActionRunLoading } =
-    useRunOneTimeAction();
-  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
-    useSaveSnapshot();
-  const { data: snapshotData, isLoading: snapshotLoading } =
-    useSnapshot(snapshotId);
+  // const { data: snapshotData, isLoading: isSnapshotLoading } = useSnapshot(
+  //   snapshotId,
+  //   lookId
+  // );
 
-  const { queryId } = snapshotData || {};
-  console.log(data, queryId);
+  // const { queryId } = snapshotData || {};
+  const snapshotSelectOptions = useMemo<FormOptionType[]>(
+    () =>
+      snapshotsData?.map(({ created_at: createdAt, query_id: queryId }) => ({
+        value: String(queryId),
+        label: createdAt,
+      })) || [],
+    [snapshotsData]
+  );
 
   return (
     <DialogLayout
@@ -56,7 +64,7 @@ const ActionSnapshots: FC<RunActionProps> = ({ lookId, title }) => {
               Run With Latest Data
             </Button>
             <Button
-              disabled={isLoading || snapshotLoading || !queryId}
+              disabled={isSnapshotsLoading || !queryId}
               onClick={() => {
                 openModal(
                   dispatch,
@@ -78,17 +86,13 @@ const ActionSnapshots: FC<RunActionProps> = ({ lookId, title }) => {
     >
       <SpaceVertical gap="small">
         <Select
-          value={snapshotId}
+          value={queryId}
           onChange={(value: string) => {
-            setSnapshotId(value);
+            setQueryId(value);
           }}
-          disabled={isLoading || isError}
-          options={[
-            {
-              value: "test",
-              label: "Test",
-            },
-          ]}
+          isLoading={isSnapshotsLoading}
+          disabled={isSnapshotsError}
+          options={snapshotSelectOptions}
           placeholder={"Select snapshot"}
         />
       </SpaceVertical>

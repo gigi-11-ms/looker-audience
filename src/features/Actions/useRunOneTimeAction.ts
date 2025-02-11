@@ -23,7 +23,7 @@ const useRunOneTimeAction = () => {
       core40SDK.ok(
         core40SDK.scheduled_plan_run_once({
           name,
-          ...(lookId ? { look_id: lookId } : {}),
+          ...(lookId && !queryId ? { look_id: lookId } : {}),
           ...(queryId ? { query_id: queryId } : {}),
           send_all_results: false,
           require_change: false,

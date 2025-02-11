@@ -142,7 +142,8 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
             onClick={() => {
               handleSubmit((data) => {
                 handleRunAction({ ...data, lookId, queryId });
-                handleSaveSnapshot(lookId);
+
+                if (!queryId) handleSaveSnapshot(lookId);
               })();
             }}
           >

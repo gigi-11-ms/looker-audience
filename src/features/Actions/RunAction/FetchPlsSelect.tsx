@@ -4,7 +4,7 @@ import FormSelect, {
 } from "../../../components/FormSelect/FormSelect";
 import { UseMutateFunction } from "react-query";
 import { IDataActionForm } from "@looker/sdk";
-import { IntegrationMutationParams } from "../useIntegrationForm";
+import { IntegrationFormParams } from "../useIntegrationForm";
 import { useFormContext } from "react-hook-form";
 import { GOOGLE_DRIVE_INTEGRATION_ID } from "../../../constants";
 
@@ -13,7 +13,7 @@ const FetchPlsSelect: FC<
     mutate?: UseMutateFunction<
       IDataActionForm,
       unknown,
-      IntegrationMutationParams,
+      IntegrationFormParams,
       unknown
     >;
   }

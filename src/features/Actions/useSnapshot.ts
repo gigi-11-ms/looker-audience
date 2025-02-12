@@ -5,7 +5,7 @@ const fetchSnapshot = async (
   snapshotId: string | undefined,
   lookId: string
 ) => {
-  const { data } = await axiosInstance.get<{ queryId: string }>(
+  const { data } = await axiosInstance.get<{ data: Record<string, string>[] }>(
     "/get_snapshot_data_looker_dia",
     {
       params: {
@@ -15,14 +15,14 @@ const fetchSnapshot = async (
     }
   );
 
-  return data;
+  return data.data;
 };
 
 const useSnapshot = (snapshotId: string | undefined, lookId: string) => {
   return useQuery({
     queryKey: ["useSnapshot", snapshotId],
     queryFn: () => fetchSnapshot(snapshotId, lookId),
-    enabled: !!snapshotId,
+    enabled: !!(snapshotId && lookId),
   });
 };
 

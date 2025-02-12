@@ -1,9 +1,5 @@
 import React, { Fragment } from "react";
-import {
-  IDataActionForm,
-  IDataActionFormField,
-  IDataActionFormSelectOption,
-} from "@looker/sdk";
+import { IDataActionFormField, IDataActionFormSelectOption } from "@looker/sdk";
 import FormTextField from "../../components/FormTextField/FormTextField";
 import FormSelect, {
   FormOptionType,

@@ -11,12 +11,14 @@ import { ILookWithDashboards } from "@looker/sdk";
 import React, { FC, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
 import ActionSnapshots from "../Actions/ActionSnapshots";
+import { useHistory } from "react-router-dom";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,
 }) => {
   const [data, setData] = useState(tableData);
   const { dispatch } = useModalContext();
+  const history = useHistory();
 
   const [columns, setColumns] = useState<DataTableColumns>([
     {
@@ -82,6 +84,9 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
           <DataTableAction onClick={() => console.log(id, "add schedule")}>
             Add Schedule
           </DataTableAction>
+          <DataTableAction onClick={() => history.push(`/snapshots/${id}`)}>
+            Snapshots
+          </DataTableAction>
         </>
       );
 
@@ -99,7 +104,7 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   );
 
   return (
-    <DataTable caption="Cheeses example" onSort={onSort} columns={columns}>
+    <DataTable caption="Audiences Table" onSort={onSort} columns={columns}>
       {items}
     </DataTable>
   );

@@ -5,3 +5,4 @@ export const MONITORING_PAGE = "/monitoring";
 export const CREATE_AUDIENCE_PAGE = "/audience/create";
 export const CREATE_AUDIENCE_EXPLORE_PAGE =
   "/audience/create/:modelName/:exploreName";
+export const SNAPSHOTS_PAGE = "/snapshots/:lookId";

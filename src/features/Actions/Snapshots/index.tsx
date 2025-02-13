@@ -78,14 +78,20 @@ const Snapshots = () => {
           options={snapshotSelectOptions}
           placeholder={"Select snapshot timestamp"}
         />
+        <Space gap="xxxsmall">
+          <Button
+            onClick={() => {
+              handleSaveSnapshot(lookId);
+            }}
+            disabled={isSnapshotSaveLoading}
+            width={"100%"}
+          >
+            Create Snapshot
+          </Button>
+        </Space>
+        {isSnapshotSaveLoading && <Spinner />}
       </Space>
-      <Button
-        onClick={() => {
-          handleSaveSnapshot(lookId);
-        }}
-      >
-        create snapshot
-      </Button>
+
       <Space
         justify="center"
         style={{ maxHeight: "calc(100vh - 220px)", overflow: "auto" }}

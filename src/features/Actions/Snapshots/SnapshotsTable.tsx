@@ -3,24 +3,28 @@ import {
   DataTableCell,
   DataTableColumns,
   DataTableItem,
-} from "@looker/components";
-import React, { FC, useMemo } from "react";
+} from '@looker/components';
+import React, { FC, useMemo } from 'react';
+import styled from 'styled-components';
 
-const SnapshotsTable: FC<{ tableData: Record<string, string>[] }> = ({
-  tableData,
-}) => {
+const SnapshotsTable: FC<{
+  tableData: Record<string, string>[];
+  isLoading: boolean;
+}> = ({ tableData, isLoading }) => {
   const columns = useMemo<DataTableColumns>(
     () =>
-      Object.keys(tableData[0]).map((value, index) => ({
-        id: String(index),
-        title: value,
-        type: "string",
-        size: "large",
-      })),
-    []
+      tableData && tableData.length > 0
+        ? Object.keys(tableData[0]).map((value, index) => ({
+            id: String(index),
+            title: value,
+            type: 'string',
+            size: 'large',
+          }))
+        : [],
+    [tableData]
   );
 
-  const items = tableData.map((item, index) => (
+  const items = tableData?.map((item, index) => (
     <DataTableItem id={String(index)} key={index}>
       {Object.values(item).map((value, index) => (
         <DataTableCell key={index}>{value}</DataTableCell>
@@ -29,10 +33,21 @@ const SnapshotsTable: FC<{ tableData: Record<string, string>[] }> = ({
   ));
 
   return (
-    <DataTable caption="SnapshotsTable" columns={columns}>
+    <DataTableStyled
+      caption='SnapshotsTable'
+      columns={columns}
+      state={
+        isLoading ? 'loading' : !tableData?.length ? 'noResults' : undefined
+      }
+    >
       {items}
-    </DataTable>
+    </DataTableStyled>
   );
 };
 
 export default SnapshotsTable;
+
+const DataTableStyled = styled(DataTable)`
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+`;

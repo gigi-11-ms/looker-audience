@@ -1,10 +1,10 @@
-import React, { useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import useSnapshots from "../useSnapshots";
-import { Select, Space, SpaceVertical, Spinner } from "@looker/components";
-import { FormOptionType } from "../../../components/FormSelect/FormSelect";
-import SnapshotsTable from "./SnapshotsTable";
-import useSnapshot from "../useSnapshot";
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import useSnapshots from '../useSnapshots';
+import { Select, Space, SpaceVertical, Spinner } from '@looker/components';
+import { FormOptionType } from '../../../components/FormSelect/FormSelect';
+import SnapshotsTable from './SnapshotsTable';
+import useSnapshot from '../useSnapshot';
 
 const Snapshots = () => {
   const [snapshotId, setSnapshotId] = useState<string>();
@@ -19,20 +19,32 @@ const Snapshots = () => {
     lookId
   );
 
+  useEffect(() => {
+    if (isSnapshotsLoading) return;
+
+    if (
+      snapshotsData &&
+      snapshotsData?.length > 0 &&
+      snapshotsData[0].snapshot_id
+    ) {
+      setSnapshotId(snapshotsData[0].snapshot_id);
+    }
+  }, [snapshotsData, isSnapshotsLoading]);
+
   const snapshotSelectOptions = useMemo<FormOptionType[]>(
     () =>
-      snapshotsData?.map(
-        ({ created_at: createdAt, snapshot_id: snapshotId }) => ({
+      snapshotsData
+        ?.filter(({ snapshot_id: snapshotId }) => !!snapshotId)
+        ?.map(({ created_at: createdAt, snapshot_id: snapshotId }) => ({
           value: String(snapshotId),
           label: createdAt,
-        })
-      ) || [],
+        })) || [],
     [snapshotsData]
   );
 
   return (
-    <SpaceVertical gap="medium">
-      <Space maxWidth={"30%"}>
+    <SpaceVertical gap='medium'>
+      <Space maxWidth={'30%'}>
         <Select
           value={snapshotId}
           onChange={(value: string) => {
@@ -41,14 +53,17 @@ const Snapshots = () => {
           isLoading={isSnapshotsLoading}
           disabled={isSnapshotsError}
           options={snapshotSelectOptions}
-          placeholder={"Select snapshot timestamp"}
+          placeholder={'Select snapshot timestamp'}
         />
       </Space>
-      <Space justify="center">
-        {isSnapshotDataLoading && <Spinner />}
-        {snapshotData?.length ? (
-          <SnapshotsTable tableData={snapshotData || [{}]} />
-        ) : null}
+      <Space
+        justify='center'
+        style={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}
+      >
+        <SnapshotsTable
+          tableData={snapshotData || []}
+          isLoading={isSnapshotDataLoading || isSnapshotsLoading} 
+        />
       </Space>
     </SpaceVertical>
   );

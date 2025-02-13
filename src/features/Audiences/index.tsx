@@ -1,8 +1,8 @@
-import React from "react";
-import useFolder from "./useFolder";
-import AudiencesTable from "./AudiencesTable";
-import { AUDIENCES_FOLDER_ID } from "../../constants";
-import { Space, SpaceVertical, Span, Spinner } from "@looker/components";
+import React from 'react';
+import useFolder from './useFolder';
+import AudiencesTable from './AudiencesTable';
+import { AUDIENCES_FOLDER_ID } from '../../constants';
+import { Space, SpaceVertical, Span, Spinner } from '@looker/components';
 
 const Audiences = () => {
   const { data: folderData, isLoading: isFolderLoading } =
@@ -11,21 +11,23 @@ const Audiences = () => {
 
   if (isFolderLoading) {
     return (
-      <Space around height={"100%"}>
-        <Spinner color={"rgb(108, 67, 224)"} size={60} />
+      <Space around height={'100%'}>
+        <Spinner color={'rgb(108, 67, 224)'} size={60} />
       </Space>
     );
   }
   return (
     <SpaceVertical>
-      <Span fontSize={"xlarge"}>
-        <Span fontSize={"xlarge"} fontWeight={"bold"}>
+      <Span fontSize={'xlarge'}>
+        <Span fontSize={'xlarge'} fontWeight={'bold'}>
           Folder:
-        </Span>{" "}
+        </Span>{' '}
         {name}
       </Span>
-      <SpaceVertical>
-        <Span fontSize={"large"}>Audiences:</Span>
+      <SpaceVertical
+        style={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}
+      >
+        <Span fontSize={'large'}>Audiences:</Span>
         {looks?.length ? <AudiencesTable tableData={looks} /> : null}
       </SpaceVertical>
     </SpaceVertical>

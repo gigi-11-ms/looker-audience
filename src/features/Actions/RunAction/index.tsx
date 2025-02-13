@@ -131,7 +131,7 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
       onSuccess: () => {
         toast.success("Snapshot Created!");
 
-        // Temp
+        // Tempp
         queryClient.refetchQueries();
       },
       onSettled: () => {

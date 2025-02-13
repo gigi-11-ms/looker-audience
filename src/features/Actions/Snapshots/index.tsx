@@ -1,10 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import useSnapshots from '../useSnapshots';
-import { Select, Space, SpaceVertical, Spinner } from '@looker/components';
-import { FormOptionType } from '../../../components/FormSelect/FormSelect';
-import SnapshotsTable from './SnapshotsTable';
-import useSnapshot from '../useSnapshot';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
+import useSnapshots from "../useSnapshots";
+import {
+  Button,
+  Select,
+  Space,
+  SpaceVertical,
+  Spinner,
+} from "@looker/components";
+import { FormOptionType } from "../../../components/FormSelect/FormSelect";
+import SnapshotsTable from "./SnapshotsTable";
+import useSnapshot from "../useSnapshot";
+import useSaveSnapshot from "../useSaveSnapshot";
+import { toast } from "react-toastify";
+import queryClient from "../../../utils/queryClient";
 
 const Snapshots = () => {
   const [snapshotId, setSnapshotId] = useState<string>();
@@ -18,6 +27,9 @@ const Snapshots = () => {
     snapshotId,
     lookId
   );
+
+  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
+    useSaveSnapshot();
 
   useEffect(() => {
     if (isSnapshotsLoading) return;
@@ -42,9 +54,20 @@ const Snapshots = () => {
     [snapshotsData]
   );
 
+  const handleSaveSnapshot = useCallback((lookId: string) => {
+    saveSnapshot(lookId, {
+      onSuccess: () => {
+        toast.success("Snapshot Created!");
+
+        // Tempp
+        queryClient.refetchQueries();
+      },
+    });
+  }, []);
+
   return (
-    <SpaceVertical gap='medium'>
-      <Space maxWidth={'30%'}>
+    <SpaceVertical gap="medium">
+      <Space maxWidth={"30%"}>
         <Select
           value={snapshotId}
           onChange={(value: string) => {
@@ -53,16 +76,23 @@ const Snapshots = () => {
           isLoading={isSnapshotsLoading}
           disabled={isSnapshotsError}
           options={snapshotSelectOptions}
-          placeholder={'Select snapshot timestamp'}
+          placeholder={"Select snapshot timestamp"}
         />
       </Space>
+      <Button
+        onClick={() => {
+          handleSaveSnapshot(lookId);
+        }}
+      >
+        create snapshot
+      </Button>
       <Space
-        justify='center'
-        style={{ maxHeight: 'calc(100vh - 220px)', overflow: 'auto' }}
+        justify="center"
+        style={{ maxHeight: "calc(100vh - 220px)", overflow: "auto" }}
       >
         <SnapshotsTable
           tableData={snapshotData || []}
-          isLoading={isSnapshotDataLoading || isSnapshotsLoading} 
+          isLoading={isSnapshotDataLoading || isSnapshotsLoading}
         />
       </Space>
     </SpaceVertical>

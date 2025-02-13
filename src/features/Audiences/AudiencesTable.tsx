@@ -23,9 +23,6 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   const { dispatch } = useModalContext();
   const history = useHistory();
 
-  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
-    useSaveSnapshot();
-
   const [columns, setColumns] = useState<DataTableColumns>([
     {
       canSort: true,
@@ -105,20 +102,6 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
           </DataTableAction>
           <DataTableAction onClick={() => history.push(`/snapshots/${id}`)}>
             Snapshots
-          </DataTableAction>
-          <DataTableAction
-            onClick={() =>
-              saveSnapshot(id, {
-                onSuccess: () => {
-                  toast.success("Snapshot Created!");
-
-                  // Temp
-                  queryClient.refetchQueries();
-                },
-              })
-            }
-          >
-            create snapshot
           </DataTableAction>
         </>
       );

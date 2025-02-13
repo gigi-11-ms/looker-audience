@@ -8,10 +8,13 @@ import {
   doDataTableSort,
 } from "@looker/components";
 import { ILookWithDashboards } from "@looker/sdk";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
 import ActionSnapshots from "../Actions/ActionSnapshots";
 import { useHistory } from "react-router-dom";
+import useSaveSnapshot from "../Actions/useSaveSnapshot";
+import queryClient from "../../utils/queryClient";
+import { toast } from "react-toastify";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,
@@ -19,6 +22,9 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   const [data, setData] = useState(tableData);
   const { dispatch } = useModalContext();
   const history = useHistory();
+
+  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
+    useSaveSnapshot();
 
   const [columns, setColumns] = useState<DataTableColumns>([
     {
@@ -41,6 +47,7 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
       title: "Last Updated",
       size: "medium",
       type: "date",
+      sortDirection: "desc",
     },
     {
       canSort: false,
@@ -61,6 +68,18 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
     setData(sortedData);
     setColumns(sortedColumns);
   };
+
+  // Maybe there is better solution for this
+  useEffect(() => {
+    const { columns: sortedColumns, data: sortedData } = doDataTableSort(
+      data,
+      columns,
+      "updated_at",
+      "desc"
+    );
+    setData(sortedData);
+    setColumns(sortedColumns);
+  }, []);
 
   const items = data.map(
     ({ id = "", title, updated_at, model: { label: modelLabel } = {} }) => {
@@ -86,6 +105,20 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
           </DataTableAction>
           <DataTableAction onClick={() => history.push(`/snapshots/${id}`)}>
             Snapshots
+          </DataTableAction>
+          <DataTableAction
+            onClick={() =>
+              saveSnapshot(id, {
+                onSuccess: () => {
+                  toast.success("Snapshot Created!");
+
+                  // Temp
+                  queryClient.refetchQueries();
+                },
+              })
+            }
+          >
+            create snapshot
           </DataTableAction>
         </>
       );

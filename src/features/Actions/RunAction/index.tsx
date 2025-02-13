@@ -22,6 +22,7 @@ import IntegrationForm from "../IntegrationForm";
 import useRunOneTimeAction from "../useRunOneTimeAction";
 import useSaveSnapshot from "../useSaveSnapshot";
 import { toast } from "react-toastify";
+import queryClient from "../../../utils/queryClient";
 
 interface RunActionProps {
   title: string;
@@ -119,9 +120,6 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
           onError: () => {
             toast.error("Something went wrong");
           },
-          onSettled: () => {
-            closeModal(dispatch);
-          },
         }
       );
     },
@@ -129,7 +127,17 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
   );
 
   const handleSaveSnapshot = useCallback((lookId: string) => {
-    saveSnapshot(lookId);
+    saveSnapshot(lookId, {
+      onSuccess: () => {
+        toast.success("Snapshot Created!");
+
+        // Temp
+        queryClient.refetchQueries();
+      },
+      onSettled: () => {
+        closeModal(dispatch);
+      },
+    });
   }, []);
 
   return (

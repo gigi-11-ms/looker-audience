@@ -14,7 +14,6 @@ import {
   CREATE_AUDIENCE_PAGE,
   MONITORING_PAGE,
   SCHEDULED_TASKS_PAGE,
-  TEMPLATES_PAGE,
 } from "../../routes/config";
 
 const NavigationElements: NavItemType[] = [
@@ -23,12 +22,9 @@ const NavigationElements: NavItemType[] = [
     path: AUDIENCES_PAGE,
   },
   {
-    name: "Templates",
-    path: TEMPLATES_PAGE,
-  },
-  {
     name: "Scheduled Tasks",
     path: SCHEDULED_TASKS_PAGE,
+    disabled: true,
   },
   {
     name: "Monitoring",
@@ -55,11 +51,12 @@ const Navigation = () => {
       </Button>
       <Box width={"100%"}>
         <NavList>
-          {NavigationElements.map(({ name, path }) => (
+          {NavigationElements.map(({ name, path, disabled }) => (
             <ListItem
               onClick={() => handleMenuItemClick(path)}
               key={path}
               selected={location.pathname === path}
+              disabled={disabled}
             >
               <Span fontSize="medium" fontWeight="semiBold">
                 {name}

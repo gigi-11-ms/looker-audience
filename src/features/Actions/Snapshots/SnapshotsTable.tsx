@@ -3,9 +3,9 @@ import {
   DataTableCell,
   DataTableColumns,
   DataTableItem,
-} from '@looker/components';
-import React, { FC, useMemo } from 'react';
-import styled from 'styled-components';
+} from "@looker/components";
+import React, { FC, useMemo } from "react";
+import styled from "styled-components";
 
 const SnapshotsTable: FC<{
   tableData: Record<string, string>[];
@@ -17,8 +17,8 @@ const SnapshotsTable: FC<{
         ? Object.keys(tableData[0]).map((value, index) => ({
             id: String(index),
             title: value,
-            type: 'string',
-            size: 'large',
+            type: "string",
+            size: "large",
           }))
         : [],
     [tableData]
@@ -34,10 +34,10 @@ const SnapshotsTable: FC<{
 
   return (
     <DataTableStyled
-      caption='SnapshotsTable'
+      caption="SnapshotsTable"
       columns={columns}
       state={
-        isLoading ? 'loading' : !tableData?.length ? 'noResults' : undefined
+        isLoading ? "loading" : !tableData?.length ? "noResults" : undefined
       }
     >
       {items}

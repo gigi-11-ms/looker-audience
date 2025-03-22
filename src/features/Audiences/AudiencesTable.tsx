@@ -7,18 +7,16 @@ import {
   DateFormat,
   doDataTableSort,
 } from "@looker/components";
-import { ILookWithDashboards } from "@looker/sdk";
 import React, { FC, useEffect, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
-import ActionSnapshots from "../Actions/ActionSnapshots";
-import { useHistory } from "react-router-dom";
+import { IAudiencesResult } from "./useAudiences";
+import EditAudience from "./EditAudience";
 
-const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
+const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
   tableData,
 }) => {
   const [data, setData] = useState(tableData);
   const { dispatch } = useModalContext();
-  const history = useHistory();
 
   const [columns, setColumns] = useState<DataTableColumns>([
     {
@@ -30,25 +28,41 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
     },
     {
       canSort: true,
-      id: "title",
+      id: "audience_name",
       title: "Name",
       size: 80,
       type: "string",
     },
+
+    {
+      canSort: false,
+      id: "email",
+      title: "Email",
+      size: "medium",
+      type: "string",
+    },
+    {
+      canSort: false,
+      id: "username",
+      title: "Username",
+      size: "medium",
+      type: "string",
+    },
     {
       canSort: true,
-      id: "updated_at",
+      id: "updated_timestamp",
       title: "Last Updated",
       size: "medium",
       type: "date",
       sortDirection: "desc",
     },
     {
-      canSort: false,
-      id: "model",
-      title: "Model",
+      canSort: true,
+      id: "created_timestamp",
+      title: "Created At",
       size: "medium",
-      type: "string",
+      type: "date",
+      sortDirection: "desc",
     },
   ]);
 
@@ -76,19 +90,35 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   }, []);
 
   const items = data.map(
-    ({ id = "", title, updated_at, model: { label: modelLabel } = {} }) => {
-      const updatedAt = new Date(updated_at || 0);
-      const lookTitle = title || "";
+    ({
+      audience_id: id,
+      audience_name: title,
+      updated_timestamp,
+      created_timestamp,
+      email,
+      username,
+      filters,
+    }) => {
+      const updatedAt = new Date(updated_timestamp || 0);
+      const createdAt = new Date(created_timestamp || 0);
+
       const actions = (
         <>
-          <DataTableAction onClick={() => console.log("edit")}>
-            Edit
-          </DataTableAction>
           <DataTableAction
             onClick={() =>
               openModal(
                 dispatch,
-                <ActionSnapshots lookId={id} title={lookTitle} />
+                <EditAudience id={id} title={title} filters={filters} />
+              )
+            }
+          >
+            Edit
+          </DataTableAction>
+          {/* <DataTableAction
+            onClick={() =>
+              openModal(
+                dispatch,
+                <ActionSnapshots lookId={id} title={audienceTitle} />
               )
             }
           >
@@ -99,7 +129,7 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
           </DataTableAction>
           <DataTableAction onClick={() => history.push(`/snapshots/${id}`)}>
             Snapshots
-          </DataTableAction>
+          </DataTableAction> */}
         </>
       );
 
@@ -107,10 +137,16 @@ const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
         <DataTableItem id={`${id}`} key={id} actions={actions}>
           <DataTableCell>{id}</DataTableCell>
           <DataTableCell style={{ lineHeight: "40px" }}>{title}</DataTableCell>
+          <DataTableCell style={{ lineHeight: "40px" }}>{email}</DataTableCell>
+          <DataTableCell style={{ lineHeight: "40px" }}>
+            {username}
+          </DataTableCell>
           <DataTableCell>
             <DateFormat>{updatedAt}</DateFormat>
           </DataTableCell>
-          <DataTableCell>{modelLabel}</DataTableCell>
+          <DataTableCell>
+            <DateFormat>{createdAt}</DateFormat>
+          </DataTableCell>
         </DataTableItem>
       );
     }

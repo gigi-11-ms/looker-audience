@@ -2,10 +2,13 @@ import {
   Button,
   ButtonTransparent,
   DialogLayout,
+  Divider,
+  Label,
+  Space,
   SpaceVertical,
   Spinner,
 } from "@looker/components";
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import { closeModal, useModalContext } from "../../../context/ModalContext";
 import {
   GOOGLE_DRIVE_INTEGRATION_ID,
@@ -23,7 +26,7 @@ import useRunOneTimeAction from "../useRunOneTimeAction";
 import useSaveSnapshot from "../useSaveSnapshot";
 import { toast } from "react-toastify";
 import queryClient from "../../../utils/queryClient";
-
+import FormFormatData from "./FormDataFormat";
 interface RunActionProps {
   title: string;
   lookId: string;
@@ -61,6 +64,7 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
     mode: "onChange",
   });
   const { handleSubmit, getValues, reset } = methods;
+  const { supported_formats: supportedFormats } = integrationData || {};
 
   useEffect(() => {
     mutate(
@@ -168,9 +172,20 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
     >
       <FormProvider {...methods}>
         <form>
-          <SpaceVertical gap="small">
+          <SpaceVertical gap="medium">
             <FormTextField name="title" label="Give your schedule a name." />
-            {renderIntegrationForm()}
+            <Divider />
+            <SpaceVertical gap="small">
+              <Label fontSize={"xlarge"}>Google Drive</Label>
+              {renderIntegrationForm()}
+            </SpaceVertical>
+            <Divider />
+            <SpaceVertical>
+              <Label fontSize={"xlarge"}>Format Data as</Label>
+              <Space gap={"medium"}>
+                <FormFormatData name="formatDataAs" />
+              </Space>
+            </SpaceVertical>
           </SpaceVertical>
         </form>
       </FormProvider>

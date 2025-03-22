@@ -12,9 +12,6 @@ import React, { FC, useEffect, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
 import ActionSnapshots from "../Actions/ActionSnapshots";
 import { useHistory } from "react-router-dom";
-import useSaveSnapshot from "../Actions/useSaveSnapshot";
-import queryClient from "../../utils/queryClient";
-import { toast } from "react-toastify";
 
 const AudiencesTable: FC<{ tableData: ILookWithDashboards[] }> = ({
   tableData,

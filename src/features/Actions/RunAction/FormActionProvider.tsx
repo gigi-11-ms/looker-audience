@@ -1,17 +1,17 @@
 import React, { FC } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import {
-  Drive_Formats,
-  getFormatIconSrc,
-  getFormatLabel,
+  getProviderIconSrc,
+  getProviderLabel,
+  PROVIDERS,
 } from "../../../constants";
 import { SpaceVertical, Span } from "@looker/components";
 
-type FormFormatDataType = {
+type FormActionProviderType = {
   name: string;
 };
 
-const FormFormatData: FC<FormFormatDataType> = ({ name }) => {
+const FormActionProvider: FC<FormActionProviderType> = ({ name }) => {
   const { control } = useFormContext();
 
   return (
@@ -20,9 +20,9 @@ const FormFormatData: FC<FormFormatDataType> = ({ name }) => {
       control={control}
       render={({ field: { onChange, value: formValue } }) => (
         <>
-          {Drive_Formats.map((value) => {
-            const iconSrc = getFormatIconSrc(value);
-            const formatLabel = getFormatLabel(value);
+          {PROVIDERS.map((value) => {
+            const iconSrc = getProviderIconSrc(value);
+            const providerLabel = getProviderLabel(value);
             const isSelected = formValue === value;
             return (
               <SpaceVertical
@@ -50,7 +50,7 @@ const FormFormatData: FC<FormFormatDataType> = ({ name }) => {
                   }}
                 />
                 <Span fontSize={"small"} textAlign={"center"}>
-                  {formatLabel}
+                  {providerLabel}
                 </Span>
               </SpaceVertical>
             );
@@ -61,4 +61,4 @@ const FormFormatData: FC<FormFormatDataType> = ({ name }) => {
   );
 };
 
-export default FormFormatData;
+export default FormActionProvider;

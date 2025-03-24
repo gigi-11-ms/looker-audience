@@ -11,6 +11,7 @@ import React, { FC, useEffect, useState } from "react";
 import { openModal, useModalContext } from "../../context/ModalContext";
 import { IAudiencesResult } from "./useAudiences";
 import EditAudience from "./EditAudience";
+import RunAction from "../Actions/RunAction";
 
 const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
   tableData,
@@ -114,11 +115,11 @@ const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
           >
             Edit
           </DataTableAction>
-          {/* <DataTableAction
+          <DataTableAction
             onClick={() =>
               openModal(
                 dispatch,
-                <ActionSnapshots lookId={id} title={audienceTitle} />
+                <RunAction audienceId={id} title={title} />
               )
             }
           >
@@ -127,9 +128,6 @@ const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
           <DataTableAction onClick={() => console.log(id, "add schedule")}>
             Add Schedule
           </DataTableAction>
-          <DataTableAction onClick={() => history.push(`/snapshots/${id}`)}>
-            Snapshots
-          </DataTableAction> */}
         </>
       );
 

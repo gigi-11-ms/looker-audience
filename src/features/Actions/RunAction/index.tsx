@@ -8,12 +8,9 @@ import {
   SpaceVertical,
   Spinner,
 } from "@looker/components";
-import React, { FC, useCallback, useEffect, useMemo } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 import { closeModal, useModalContext } from "../../../context/ModalContext";
-import {
-  GOOGLE_DRIVE_INTEGRATION_ID,
-  LOOKER_INTEGRATION,
-} from "../../../constants";
+import { GOOGLE_DRIVE_INTEGRATION_ID } from "../../../constants";
 import useIntegration from "../useIntegration";
 import useIntegrationForm from "../useIntegrationForm";
 import { FormProvider, useForm } from "react-hook-form";
@@ -23,21 +20,18 @@ import getIntegrationFormSchema from "./integrationFormSchema";
 import { z } from "zod";
 import IntegrationForm from "../IntegrationForm";
 import useRunOneTimeAction from "../useRunOneTimeAction";
-import useSaveSnapshot from "../useSaveSnapshot";
-import { toast } from "react-toastify";
-import queryClient from "../../../utils/queryClient";
 import FormFormatData from "./FormDataFormat";
+import FormActionProvider from "./FormActionProvider";
 interface RunActionProps {
   title: string;
-  lookId: string;
-  queryId?: string;
+  audienceId: string;
 }
 
 export type ActionFormType = z.infer<
   ReturnType<typeof getIntegrationFormSchema>
 >;
 
-const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
+const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
   const { dispatch } = useModalContext();
   const { data: integrationData } = useIntegration(GOOGLE_DRIVE_INTEGRATION_ID);
   const {
@@ -50,15 +44,13 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
 
   const { mutate: runOneTimeAction, isLoading: isActionRunLoading } =
     useRunOneTimeAction();
-  const { mutate: saveSnapshot, isLoading: isSnapshotSaveLoading } =
-    useSaveSnapshot();
 
   const methods = useForm<ActionFormType>({
     resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
     defaultValues: {
       title,
-      provider: "1::google_drive", // temp
-      formatDataAs: "json", // temp
+      provider: "1::google_drive",
+      formatDataAs: "json",
       integrationForm: {},
     },
     mode: "onChange",
@@ -98,51 +90,37 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
       formatDataAs,
       integrationForm,
       provider,
-      lookId,
-      queryId,
-    }: ActionFormType & { queryId?: string; lookId?: string }) => {
-      runOneTimeAction(
-        {
-          queryId,
-          lookId,
-          name: title,
-          scheduledPlanDestination: [
-            {
-              format: formatDataAs,
-              address: "",
-              apply_formatting: true,
-              apply_vis: true,
-              type: LOOKER_INTEGRATION + provider,
-              parameters: JSON.stringify(integrationForm),
-            },
-          ],
-        },
-        {
-          onSuccess: () => {
-            toast.success("Audience Sent!");
-          },
-          onError: () => {
-            toast.error("Something went wrong");
-          },
-        }
-      );
+      audienceId,
+    }: ActionFormType & { audienceId: string }) => {
+      // runOneTimeAction(
+      //   {
+      //     queryId,
+      //     lookId,
+      //     name: title,
+      //     scheduledPlanDestination: [
+      //       {
+      //         format: formatDataAs,
+      //         address: "",
+      //         apply_formatting: true,
+      //         apply_vis: true,
+      //         type: LOOKER_INTEGRATION + provider,
+      //         parameters: JSON.stringify(integrationForm),
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     onSuccess: () => {
+      //       toast.success("Audience Sent!");
+      //     },
+      //     onError: () => {
+      //       toast.error("Something went wrong");
+      //     },
+      //   }
+      // );
+      console.log({ formatDataAs, integrationForm, provider, audienceId });
     },
     []
   );
-
-  const handleSaveSnapshot = useCallback((lookId: string) => {
-    saveSnapshot(lookId, {
-      onSuccess: () => {
-        toast.success("Snapshot Created!");
-
-        // Tempp
-        queryClient.refetchQueries();
-      },
-      onSettled: () => {
-        closeModal(dispatch);
-      },
-    });
-  }, []);
 
   return (
     <DialogLayout
@@ -150,12 +128,10 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
       footer={
         <>
           <Button
-            disabled={isActionRunLoading || isSnapshotSaveLoading}
+            disabled={isActionRunLoading}
             onClick={() => {
               handleSubmit((data) => {
-                handleRunAction({ ...data, lookId, queryId });
-
-                if (!queryId) handleSaveSnapshot(lookId);
+                handleRunAction({ ...data, audienceId });
               })();
             }}
           >
@@ -176,13 +152,30 @@ const RunAction: FC<RunActionProps> = ({ lookId, queryId, title }) => {
             <FormTextField name="title" label="Give your schedule a name." />
             <Divider />
             <SpaceVertical gap="small">
-              <Label fontSize={"xlarge"}>Google Drive</Label>
+              <Label fontSize={"medium"}>Where should this data go?</Label>
+              <Space
+                gap={"xxlarge"}
+                flexWrap={"wrap"}
+                style={{ rowGap: "20px" }}
+                align={"start"}
+              >
+                <FormActionProvider name="provider"/>
+              </Space>
+            </SpaceVertical>
+            <Divider />
+            <SpaceVertical gap="small">
+              <Label fontSize={"medium"}>Google Drive</Label>
               {renderIntegrationForm()}
             </SpaceVertical>
             <Divider />
             <SpaceVertical>
-              <Label fontSize={"xlarge"}>Format Data as</Label>
-              <Space gap={"medium"}>
+              <Label fontSize={"medium"}>Format Data as</Label>
+              <Space
+                gap={"xxlarge"}
+                flexWrap={"wrap"}
+                style={{ rowGap: "20px" }}
+                align={"start"}
+              >
                 <FormFormatData name="formatDataAs" />
               </Space>
             </SpaceVertical>

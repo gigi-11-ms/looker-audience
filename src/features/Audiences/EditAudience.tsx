@@ -1,5 +1,5 @@
 import {
-  Button,
+  Box,
   DialogLayout,
   Space,
   SpaceVertical,
@@ -7,11 +7,14 @@ import {
 } from "@looker/components";
 import React, { FC } from "react";
 import FormTextField from "../../components/FormTextField/FormTextField";
-import { FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import useUpdateAudience from "./useUpdateAudience";
 import LoadingButton from "../../components/LoadingButton";
 import { closeModal, useModalContext } from "../../context/ModalContext";
 import queryClient from "../../utils/queryClient";
+import schema from "./EditAudience.schema";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface EditAudienceProps {
   id: string;
@@ -19,21 +22,26 @@ interface EditAudienceProps {
   filters: Record<string, unknown>;
 }
 
+export type EditAudienceFormType = z.infer<typeof schema>;
+
 const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
   const jsonFilters = JSON.stringify(filters, null, 2);
 
   const { mutate, isLoading } = useUpdateAudience();
   const { dispatch } = useModalContext();
 
-  const methods = useForm({
+  const methods = useForm<EditAudienceFormType>({
+    resolver: zodResolver(schema),
     defaultValues: {
       title,
+      filters: jsonFilters,
     },
   });
 
   const {
+    control,
     handleSubmit,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = methods;
 
   return (
@@ -44,9 +52,9 @@ const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
           <Space gap="small">
             <LoadingButton
               onClick={() => {
-                handleSubmit(({ title }) => {
+                handleSubmit(({ title, filters }) => {
                   mutate(
-                    { id, name: title },
+                    { id, name: title, filters: JSON.parse(filters) },
                     {
                       onSuccess: () => {
                         queryClient.invalidateQueries({
@@ -70,13 +78,23 @@ const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
       <FormProvider {...methods}>
         <SpaceVertical gap="small">
           <FormTextField name="title" />
-          <TextArea
-            value={jsonFilters}
-            resize
-            placeholder="Filters"
-            rows={10}
-            disabled
-          />
+          <Box>
+            <Controller
+              name="filters"
+              control={control}
+              render={({ field }) => (
+                <TextArea
+                  {...field}
+                  id="jsonInput"
+                  placeholder="Enter your JSON here"
+                  rows={6}
+                />
+              )}
+            />
+            {errors.filters && (
+              <p style={{ color: "red" }}>{errors.filters.message}</p>
+            )}
+          </Box>
         </SpaceVertical>
       </FormProvider>
     </DialogLayout>

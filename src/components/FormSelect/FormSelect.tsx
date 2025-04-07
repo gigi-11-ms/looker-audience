@@ -39,7 +39,7 @@ const FormSelect: FC<FormSelectFieldType> = ({
             </FloatingLabelField>
           ) : null}
           <Select
-            value={value}
+            value={value || ''}
             onChange={(value: string) => {
               hfOnchange(value);
               onChange?.(value);

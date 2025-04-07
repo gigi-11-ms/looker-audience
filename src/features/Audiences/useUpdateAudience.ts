@@ -1,5 +1,5 @@
 import { useMutation } from "react-query";
-import { audiencesInstance } from "../../utils/queryClient/axios";
+import axiosInstance from "../../utils/queryClient/axios";
 
 interface IAudienceUpdateParams {
   id: string;
@@ -8,7 +8,7 @@ interface IAudienceUpdateParams {
 }
 
 const updateAudience = async ({ id, name, filters }: IAudienceUpdateParams) => {
-  await audiencesInstance.patch(`/audiences/${id}`, {
+  await axiosInstance.patch(`/audiences/${id}`, {
     audience_name: name,
     filters
   });

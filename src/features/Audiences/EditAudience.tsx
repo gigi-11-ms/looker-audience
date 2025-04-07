@@ -1,6 +1,7 @@
 import {
   Box,
   DialogLayout,
+  Label,
   Space,
   SpaceVertical,
   TextArea,
@@ -46,7 +47,7 @@ const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
 
   return (
     <DialogLayout
-      header="Select snapshot to use or run action with latest data"
+      header="Edit Audience"
       footer={
         <Space gap="small">
           <Space gap="small">
@@ -77,8 +78,9 @@ const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
     >
       <FormProvider {...methods}>
         <SpaceVertical gap="small">
-          <FormTextField name="title" />
-          <Box>
+          <FormTextField name="title" label="Title" />
+          <SpaceVertical gap="small">
+            <Label>Filters</Label>
             <Controller
               name="filters"
               control={control}
@@ -94,7 +96,7 @@ const EditAudience: FC<EditAudienceProps> = ({ id, title, filters }) => {
             {errors.filters && (
               <p style={{ color: "red" }}>{errors.filters.message}</p>
             )}
-          </Box>
+          </SpaceVertical>
         </SpaceVertical>
       </FormProvider>
     </DialogLayout>

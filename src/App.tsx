@@ -16,6 +16,7 @@ import {
 import Layout from "./layout";
 import {
   AUDIENCES_PAGE,
+  CONFIGURATION_PAGE,
   CREATE_AUDIENCE_EXPLORE_PAGE,
   CREATE_AUDIENCE_PAGE,
   MONITORING_PAGE,
@@ -31,6 +32,7 @@ import ScheduledTasksPage from "./pages/ScheduledTasks";
 import MonitoringPage from "./pages/Monitoring";
 import CreateAudiencePage from "./pages/CreateAudience";
 import CreateAudienceExplorePage from "./pages/CreateAudienceExplore";
+import ConfigurationPage from "./pages/Configuration";
 import ModalContextProvider from "./context/ModalContext";
 
 import "react-toastify/dist/ReactToastify.min.css";
@@ -71,6 +73,11 @@ export const App = hot(() => {
                     path={MONITORING_PAGE}
                     exact
                     component={MonitoringPage}
+                  />
+                  <Route
+                    path={CONFIGURATION_PAGE}
+                    exact
+                    component={ConfigurationPage}
                   />
                   <Route
                     path={CREATE_AUDIENCE_PAGE}

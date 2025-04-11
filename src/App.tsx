@@ -16,11 +16,11 @@ import {
 import Layout from "./layout";
 import {
   AUDIENCES_PAGE,
+  CONFIGURATION_PAGE,
   CREATE_AUDIENCE_EXPLORE_PAGE,
   CREATE_AUDIENCE_PAGE,
   MONITORING_PAGE,
   SCHEDULED_TASKS_PAGE,
-  SNAPSHOTS_PAGE,
   TEMPLATES_PAGE,
 } from "./routes/config";
 
@@ -32,11 +32,13 @@ import ScheduledTasksPage from "./pages/ScheduledTasks";
 import MonitoringPage from "./pages/Monitoring";
 import CreateAudiencePage from "./pages/CreateAudience";
 import CreateAudienceExplorePage from "./pages/CreateAudienceExplore";
+import ConfigurationPage from "./pages/Configuration";
 import ModalContextProvider from "./context/ModalContext";
 
 import "react-toastify/dist/ReactToastify.min.css";
 import { ToastContainer } from "react-toastify";
-import SnapshotsPage from "./pages/Snapshots";
+
+import "./index.css";
 
 // TODO: fix ts error for router
 export const App = hot(() => {
@@ -73,6 +75,11 @@ export const App = hot(() => {
                     component={MonitoringPage}
                   />
                   <Route
+                    path={CONFIGURATION_PAGE}
+                    exact
+                    component={ConfigurationPage}
+                  />
+                  <Route
                     path={CREATE_AUDIENCE_PAGE}
                     exact
                     component={CreateAudiencePage}
@@ -81,11 +88,6 @@ export const App = hot(() => {
                     path={CREATE_AUDIENCE_EXPLORE_PAGE}
                     exact
                     component={CreateAudienceExplorePage}
-                  />
-                  <Route
-                    path={SNAPSHOTS_PAGE}
-                    exact
-                    component={SnapshotsPage}
                   />
                   <Route component={ErrorPage} />
                 </Switch>

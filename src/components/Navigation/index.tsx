@@ -11,6 +11,7 @@ import {
 import { NavItemType } from "./types";
 import {
   AUDIENCES_PAGE,
+  CONFIGURATION_PAGE,
   CREATE_AUDIENCE_PAGE,
   MONITORING_PAGE,
   SCHEDULED_TASKS_PAGE,
@@ -30,6 +31,10 @@ const NavigationElements: NavItemType[] = [
     name: "Monitoring",
     path: MONITORING_PAGE,
   },
+  {
+    name: "Configuration",
+    path: CONFIGURATION_PAGE
+  }
 ];
 
 const Navigation = () => {

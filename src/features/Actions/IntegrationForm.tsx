@@ -6,7 +6,7 @@ import generateFormField, {
 import { SpaceVertical } from "@looker/components";
 import { FormOptionType } from "../../components/FormSelect/FormSelect";
 import { UseMutateFunction } from "react-query";
-import { IntegrationMutationParams } from "./useIntegrationForm";
+import { IntegrationFormParams } from "./useIntegrationForm";
 import FetchPlsSelect from "./RunAction/FetchPlsSelect";
 
 type IntegrationFormType = {
@@ -14,7 +14,7 @@ type IntegrationFormType = {
   mutate?: UseMutateFunction<
     IDataActionForm,
     unknown,
-    IntegrationMutationParams,
+    IntegrationFormParams,
     unknown
   >;
 };

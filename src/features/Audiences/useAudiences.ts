@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { audiencesInstance } from "../../utils/queryClient/axios";
+import axiosInstance from "../../utils/queryClient/axios";
 
 export interface IAudiencesResult {
   audience_id: string;
@@ -12,7 +12,7 @@ export interface IAudiencesResult {
 }
 
 const fetchAudiences = async () => {
-  const { data } = await audiencesInstance.get<IAudiencesResult[]>("/audiences");
+  const { data } = await axiosInstance.get<IAudiencesResult[]>("/audiences");
 
   return data;
 };

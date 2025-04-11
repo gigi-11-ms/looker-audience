@@ -17,9 +17,7 @@ export const LOOKER_INTEGRATION = "looker-integration://";
 export const GOOGLE_DRIVE_ACTION_DESTINATION =
   LOOKER_INTEGRATION + GOOGLE_DRIVE_INTEGRATION_ID;
 
-export const PROVIDERS = [
-  '1::google_drive'
-] as const
+export const PROVIDERS = ["1::google_drive"] as const;
 
 export const Drive_Formats = [
   "txt",
@@ -34,8 +32,8 @@ export const Drive_Formats = [
   "html",
 ] as const;
 
-type DriveFormatType = typeof Drive_Formats[number];
-type ProviderType = typeof PROVIDERS[number]
+type DriveFormatType = (typeof Drive_Formats)[number];
+type ProviderType = (typeof PROVIDERS)[number];
 
 // Temp
 const FormatIconSrcMap: Record<DriveFormatType, string> = {
@@ -57,8 +55,8 @@ const FormatIconSrcMap: Record<DriveFormatType, string> = {
 };
 
 const FormatLabelMap: Record<DriveFormatType, string> = {
-  csv: 'CSV',
-  html: 'HTML', 
+  csv: "CSV",
+  html: "HTML",
   xlsx: "XLSX",
   json: "JSON",
   json_label: "JSON - Label",
@@ -66,26 +64,36 @@ const FormatLabelMap: Record<DriveFormatType, string> = {
   json_detail: "JSON - Detial",
   json_detail_lite_stream: "JSON with Query Metadata - Streamable",
   inline_json: "JSON — Detailed, Inline",
-  txt: 'Text'
-}
+  txt: "Text",
+};
 
 const ProvidersIconSrcMap: Record<ProviderType, string> = {
-  "1::google_drive": 'https://makingscience.eu.looker.com/integrations/1%3A%3Agoogle_drive/icon'
-}
+  "1::google_drive":
+    "https://makingscience.eu.looker.com/integrations/1%3A%3Agoogle_drive/icon",
+};
 
 const ProvidersLabelMap: Record<ProviderType, string> = {
-  "1::google_drive": 'Google Drive'
-}
+  "1::google_drive": "Google Drive",
+};
 
 export const getFormatIconSrc = (format: DriveFormatType): string =>
   FormatIconSrcMap[format];
-export const getFormatLabel = (format: DriveFormatType): string => FormatLabelMap[format] || 'CSV'
+export const getFormatLabel = (format: DriveFormatType): string =>
+  FormatLabelMap[format] || "CSV";
 
-export const getProviderIconSrc = (provider: ProviderType): string => ProvidersIconSrcMap[provider]
-export const getProviderLabel = (provider: ProviderType): string => ProvidersLabelMap[provider]
+export const getProviderIconSrc = (provider: ProviderType): string =>
+  ProvidersIconSrcMap[provider];
+export const getProviderLabel = (provider: ProviderType): string =>
+  ProvidersLabelMap[provider];
 
 export const AUDIENCES_API_TOKEN =
   "OtiSSjohDGigDqAFBCHQanVdptwbBqim3JABOtWM/B0=";
 
 export const AUDIENCES_BASE_URL =
   "https://dia-audience-manager-948043638698.europe-southwest1.run.app";
+
+export const MAPPINGS_BASE_URL =
+  "https://dia-activations-field-map-948043638698.europe-west1.run.app";
+
+export const LOOKML_MODEL = "thelook_partner"
+export const EXPLORE = "order_items"

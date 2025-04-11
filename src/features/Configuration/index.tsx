@@ -30,7 +30,7 @@ const Configuration = () => {
   const fields = useMemo<IField[]>(
     () =>
       dimensions?.map(({ name = "other", label = "Other" }) => ({
-        value: `${name}.${viewName}`,
+        value: `${viewName}.${name}`,
         label,
       })) || [],
     [dimensions, viewName]

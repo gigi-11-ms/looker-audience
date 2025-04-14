@@ -12,12 +12,15 @@ import { openModal, useModalContext } from "../../context/ModalContext";
 import { IAudiencesResult } from "./useAudiences";
 import EditAudience from "./EditAudience";
 import RunAction from "../Actions/RunAction";
+import useDeleteAudience from "./useDeleteAudience";
 
 const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
   tableData,
 }) => {
-  const [data, setData] = useState(tableData);
+  const [data, setData] = useState(() => tableData);
   const { dispatch } = useModalContext();
+  const { mutate: deleteAudience, isLoading: isDeleteAudienceLoading } =
+    useDeleteAudience();
 
   const [columns, setColumns] = useState<DataTableColumns>([
     {
@@ -112,21 +115,29 @@ const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
                 <EditAudience id={id} title={title} filters={filters} />
               )
             }
+            disabled={isDeleteAudienceLoading}
           >
             Edit
           </DataTableAction>
           <DataTableAction
             onClick={() =>
-              openModal(
-                dispatch,
-                <RunAction audienceId={id} title={title} />
-              )
+              openModal(dispatch, <RunAction audienceId={id} title={title} />)
             }
+            disabled={isDeleteAudienceLoading}
           >
             Send
           </DataTableAction>
-          <DataTableAction onClick={() => console.log(id, "add schedule")}>
+          <DataTableAction
+            onClick={() => console.log(id, "add schedule")}
+            disabled={isDeleteAudienceLoading}
+          >
             Add Schedule
+          </DataTableAction>
+          <DataTableAction
+            onClick={() => deleteAudience(id)}
+            disabled={isDeleteAudienceLoading}
+          >
+            Delete
           </DataTableAction>
         </>
       );

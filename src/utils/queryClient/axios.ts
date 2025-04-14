@@ -21,12 +21,4 @@ export const mappingsAxiosInstance = axios.create({
   },
 });
 
-export const audiencesInstance = axios.create({
-  baseURL: AUDIENCES_BASE_URL,
-  headers: {
-    Authorization: `Bearer ${AUDIENCES_API_TOKEN}`,
-    "Content-Type": "application/json",
-  },
-});
-
 export default axiosInstance;

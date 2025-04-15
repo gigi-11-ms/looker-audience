@@ -95,5 +95,8 @@ export const AUDIENCES_BASE_URL =
 export const MAPPINGS_BASE_URL =
   "https://dia-activations-field-map-948043638698.europe-west1.run.app";
 
-export const LOOKML_MODEL = "thelook_partner"
-export const EXPLORE = "order_items"
+export const CREATE_QUERY_BASE_URL =
+  "https://dia-create-looker-query-948043638698.europe-southwest1.run.app";
+
+export const LOOKML_MODEL = "thelook_partner";
+export const EXPLORE = "order_items";

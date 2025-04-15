@@ -22,6 +22,7 @@ import IntegrationForm from "../IntegrationForm";
 import useRunOneTimeAction from "../useRunOneTimeAction";
 import FormFormatData from "./FormDataFormat";
 import FormActionProvider from "./FormActionProvider";
+import useCreateQuery from "../useCreateQuery";
 interface RunActionProps {
   title: string;
   audienceId: string;
@@ -44,6 +45,8 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
 
   const { mutate: runOneTimeAction, isLoading: isActionRunLoading } =
     useRunOneTimeAction();
+
+  const { mutate: createQuery } = useCreateQuery();
 
   const methods = useForm<ActionFormType>({
     resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
@@ -118,6 +121,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       //   }
       // );
       console.log({ formatDataAs, integrationForm, provider, audienceId });
+      createQuery({ audienceId, actionEndpoint: provider });
     },
     []
   );
@@ -159,7 +163,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                 style={{ rowGap: "20px" }}
                 align={"start"}
               >
-                <FormActionProvider name="provider"/>
+                <FormActionProvider name="provider" />
               </Space>
             </SpaceVertical>
             <Divider />

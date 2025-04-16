@@ -7,11 +7,20 @@ interface CreateQueryParams {
   actionEndpoint: string;
 }
 
-const createQuery = ({ audienceId, actionEndpoint }: CreateQueryParams) =>
-    createQueryInstance.post(`/create-query`, {
-    audience_id: audienceId,
-    action_endpoint: actionEndpoint,
-  });
+const createQuery = async ({
+  audienceId,
+  actionEndpoint,
+}: CreateQueryParams) => {
+  const { data } = await createQueryInstance.post<{ query_id: string }>(
+    `/create-query`,
+    {
+      audience_id: audienceId,
+      action_endpoint: actionEndpoint,
+    }
+  );
+
+  return data;
+};
 
 const useCreateQuery = () =>
   useMutation({

@@ -10,5 +10,6 @@ application: audience-app {
     use_iframes: yes
     use_form_submit: yes
     external_api_urls : ["https://europe-west1-ms-gauss-pixel.cloudfunctions.net", "https://dia-audience-manager-948043638698.europe-southwest1.run.app", "https://dia-activations-field-map-948043638698.europe-west1.run.app", "https://dia-create-looker-query-948043638698.europe-southwest1.run.app"]
+    global_user_attributes: ["email"]
   }
 }

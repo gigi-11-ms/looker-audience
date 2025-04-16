@@ -1,5 +1,4 @@
 import {
-  Button,
   ButtonTransparent,
   DialogLayout,
   Divider,
@@ -8,9 +7,12 @@ import {
   SpaceVertical,
   Spinner,
 } from "@looker/components";
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback, useContext, useEffect } from "react";
 import { closeModal, useModalContext } from "../../../context/ModalContext";
-import { GOOGLE_DRIVE_INTEGRATION_ID } from "../../../constants";
+import {
+  GOOGLE_DRIVE_INTEGRATION_ID,
+  LOOKER_INTEGRATION,
+} from "../../../constants";
 import useIntegration from "../useIntegration";
 import useIntegrationForm from "../useIntegrationForm";
 import { FormProvider, useForm } from "react-hook-form";
@@ -23,6 +25,11 @@ import useRunOneTimeAction from "../useRunOneTimeAction";
 import FormFormatData from "./FormDataFormat";
 import FormActionProvider from "./FormActionProvider";
 import useCreateQuery from "../useCreateQuery";
+import { toast } from "react-toastify";
+import LoadingButton from "../../../components/LoadingButton";
+import useCreateActivation from "../useCreateActivation";
+import { ExtensionContext, ExtensionContext40 } from "@looker/extension-sdk-react";
+
 interface RunActionProps {
   title: string;
   audienceId: string;
@@ -41,12 +48,20 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
     isLoading: integrationFormLoading,
   } = useIntegrationForm();
 
+  const {
+    extensionSDK,
+  } = useContext(ExtensionContext)
+
   const { fields: integrationFormFields } = integrationFormData || {};
 
   const { mutate: runOneTimeAction, isLoading: isActionRunLoading } =
     useRunOneTimeAction();
 
-  const { mutate: createQuery } = useCreateQuery();
+  const { mutate: createQuery, isLoading: isCreateQueryLoading } =
+    useCreateQuery();
+
+  const { mutate: createActivation, isLoading: isCreateActivationLoading } =
+    useCreateActivation();
 
   const methods = useForm<ActionFormType>({
     resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
@@ -59,7 +74,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
     mode: "onChange",
   });
   const { handleSubmit, getValues, reset } = methods;
-  const { supported_formats: supportedFormats } = integrationData || {};
+  // const { supported_formats: supportedFormats } = integrationData || {};
 
   useEffect(() => {
     mutate(
@@ -95,33 +110,63 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       provider,
       audienceId,
     }: ActionFormType & { audienceId: string }) => {
-      // runOneTimeAction(
-      //   {
-      //     queryId,
-      //     lookId,
-      //     name: title,
-      //     scheduledPlanDestination: [
-      //       {
-      //         format: formatDataAs,
-      //         address: "",
-      //         apply_formatting: true,
-      //         apply_vis: true,
-      //         type: LOOKER_INTEGRATION + provider,
-      //         parameters: JSON.stringify(integrationForm),
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     onSuccess: () => {
-      //       toast.success("Audience Sent!");
-      //     },
-      //     onError: () => {
-      //       toast.error("Something went wrong");
-      //     },
-      //   }
-      // );
-      console.log({ formatDataAs, integrationForm, provider, audienceId });
-      createQuery({ audienceId, actionEndpoint: provider });
+      createQuery(
+        { audienceId, actionEndpoint: provider },
+        {
+          onSuccess: ({ query_id: queryId }) =>
+            runOneTimeAction(
+              {
+                queryId,
+                name: title,
+                scheduledPlanDestination: [
+                  {
+                    format: formatDataAs,
+                    address: "",
+                    apply_formatting: true,
+                    apply_vis: true,
+                    type: LOOKER_INTEGRATION + provider,
+                    parameters: JSON.stringify(integrationForm),
+                  },
+                ],
+              },
+              {
+                onSuccess: async (data) => {
+                  const {
+                    user: {
+                      first_name: name = "",
+                      last_name: lastname = "",
+                    } = {},
+                    id = "",
+                    crontab,
+                  } = data;
+
+                  const email = await extensionSDK.userAttributeGetItem('email') || ''
+                  createActivation(
+                    {
+                      activationEndpoint: provider,
+                      activationName: title,
+                      audienceId,
+                      creatorName: name,
+                      creatorLastname: lastname,
+                      queryId,
+                      scheduledPlanId: id,
+                      schedule: crontab,
+                      creatorEmail: email,
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Audience Sent!");
+                      },
+                    }
+                  );
+                },
+                onError: () => {
+                  toast.error("Something went wrong");
+                },
+              }
+            ),
+        }
+      );
     },
     []
   );
@@ -131,8 +176,18 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       header="Run Action"
       footer={
         <>
-          <Button
-            disabled={isActionRunLoading}
+          <LoadingButton
+            disabled={
+              isActionRunLoading ||
+              isCreateActivationLoading ||
+              isCreateQueryLoading ||
+              integrationFormLoading
+            }
+            loading={
+              isActionRunLoading ||
+              isCreateActivationLoading ||
+              isCreateQueryLoading
+            }
             onClick={() => {
               handleSubmit((data) => {
                 handleRunAction({ ...data, audienceId });
@@ -140,7 +195,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
             }}
           >
             Run
-          </Button>
+          </LoadingButton>
           <ButtonTransparent
             color="neutral"
             onClick={() => closeModal(dispatch)}

@@ -14,7 +14,6 @@ const getIntegrationFormSchema = (fields: IDataActionForm["fields"]) => {
 
   return z.object({
     title: z.string().min(1, { message: "Title is a required field" }),
-    provider: z.string().min(1, { message: "Choose at least one provider" }),
     formatDataAs: z.string().min(1, { message: "Choose at least one format" }),
     integrationForm: z.object(schema),
   });

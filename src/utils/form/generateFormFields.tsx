@@ -1,15 +1,16 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { IDataActionFormField, IDataActionFormSelectOption } from "@looker/sdk";
 import FormTextField from "../../components/FormTextField/FormTextField";
 import FormSelect, {
   FormOptionType,
 } from "../../components/FormSelect/FormSelect";
-import { Button } from "@looker/components";
+import { Button, Link, SpaceVertical } from "@looker/components";
 
 enum FieldType {
   SELECT = "select",
   STRING = "string",
   LOGIN = "oauth_link",
+  LOGIN_GOOGLE = "oauth_link_google",
 }
 
 type GenerateFormFieldType = {
@@ -27,7 +28,7 @@ export const getSelectOptions = (option: IDataActionFormSelectOption) => {
 };
 
 const generateFormField = ({ field, preffix }: GenerateFormFieldType) => {
-  const { type, name, label, options } = field;
+  const { type, name, label, options, description, oauth_url } = field;
 
   const fieldName = `${preffix}.${name || ""}`;
   const fieldLabel = label || "";
@@ -49,14 +50,24 @@ const generateFormField = ({ field, preffix }: GenerateFormFieldType) => {
         />
       );
     }
-    case FieldType.LOGIN: {
+    case FieldType.LOGIN:
+    case FieldType.LOGIN_GOOGLE: {
       return (
-        <Fragment key={fieldName}>
-          <span>Please login to your Google account to continue.</span>
-          <Button key={fieldName} onClick={() => console.log("handle login")}>
+        <SpaceVertical
+          gap="medium"
+          align={"center"}
+          key={fieldName}
+          textAlign={"center"}
+        >
+          <span>{description}</span>
+          <Link
+            href={oauth_url || ""}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {fieldLabel}
-          </Button>
-        </Fragment>
+          </Link>
+        </SpaceVertical>
       );
     }
     default: {

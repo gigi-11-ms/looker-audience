@@ -1,26 +1,32 @@
 import React, { FC } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import {
-  Drive_Formats,
+  FORMATS_MAP,
   getFormatIconSrc,
   getFormatLabel,
+  ProviderType,
 } from "../../../constants";
 import { SpaceVertical, Span } from "@looker/components";
 
 type FormFormatDataType = {
   name: string;
+  selectedProvider: ProviderType;
 };
 
-const FormFormatData: FC<FormFormatDataType> = ({ name }) => {
+const FormFormatData: FC<FormFormatDataType> = ({ name, selectedProvider }) => {
   const { control } = useFormContext();
+  const formats = FORMATS_MAP[selectedProvider];
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field: { onChange, value: formValue } }) => (
+      render={({
+        field: { onChange, value: formValue },
+        fieldState: { error: { message } = {} },
+      }) => (
         <>
-          {Drive_Formats.map((value) => {
+          {formats.map((value) => {
             const iconSrc = getFormatIconSrc(value);
             const formatLabel = getFormatLabel(value);
             const isSelected = formValue === value;

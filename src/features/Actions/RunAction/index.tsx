@@ -5,15 +5,18 @@ import {
   Label,
   Space,
   SpaceVertical,
+  Span,
   Spinner,
 } from "@looker/components";
-import React, { FC, useCallback, useContext, useEffect } from "react";
+import React, { FC, useCallback, useContext, useEffect, useState } from "react";
 import { closeModal, useModalContext } from "../../../context/ModalContext";
 import {
-  GOOGLE_DRIVE_INTEGRATION_ID,
+  FACEBOOK_INTEGRATION_ID,
+  getProviderLabel,
   LOOKER_INTEGRATION,
+  ProviderType,
 } from "../../../constants";
-import useIntegration from "../useIntegration";
+// import useIntegration from "../useIntegration";
 import useIntegrationForm from "../useIntegrationForm";
 import { FormProvider, useForm } from "react-hook-form";
 import FormTextField from "../../../components/FormTextField/FormTextField";
@@ -28,7 +31,10 @@ import useCreateQuery from "../useCreateQuery";
 import { toast } from "react-toastify";
 import LoadingButton from "../../../components/LoadingButton";
 import useCreateActivation from "../useCreateActivation";
-import { ExtensionContext, ExtensionContext40 } from "@looker/extension-sdk-react";
+import {
+  ExtensionContext,
+  ExtensionContext40,
+} from "@looker/extension-sdk-react";
 
 interface RunActionProps {
   title: string;
@@ -41,16 +47,18 @@ export type ActionFormType = z.infer<
 
 const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
   const { dispatch } = useModalContext();
-  const { data: integrationData } = useIntegration(GOOGLE_DRIVE_INTEGRATION_ID);
+  const [canRunAction, setCanRunAction] = useState(false);
+  const [provider, setProvider] = useState<ProviderType>(
+    () => FACEBOOK_INTEGRATION_ID
+  );
+  // const { data: integrationData } = useIntegration(provider);
   const {
     data: integrationFormData,
     mutate,
     isLoading: integrationFormLoading,
   } = useIntegrationForm();
 
-  const {
-    extensionSDK,
-  } = useContext(ExtensionContext)
+  const { extensionSDK } = useContext(ExtensionContext);
 
   const { fields: integrationFormFields } = integrationFormData || {};
 
@@ -67,31 +75,44 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
     resolver: zodResolver(getIntegrationFormSchema(integrationFormFields)),
     defaultValues: {
       title,
-      provider: "1::google_drive",
-      formatDataAs: "json",
+      formatDataAs: "",
       integrationForm: {},
     },
     mode: "onChange",
   });
-  const { handleSubmit, getValues, reset } = methods;
+  const {
+    handleSubmit,
+    getValues,
+    reset,
+    formState: {
+      errors: { formatDataAs: { message: formatError } = {} },
+    },
+  } = methods;
   // const { supported_formats: supportedFormats } = integrationData || {};
 
   useEffect(() => {
     mutate(
-      { integrationId: GOOGLE_DRIVE_INTEGRATION_ID },
+      { integrationId: provider },
       {
         onSuccess: (data) => {
           const { fields } = data;
           const formFields = fields?.reduce((acc, curr) => {
             const { name } = curr;
             return { ...acc, [name || ""]: curr.default || "" };
-          }, {});
+          }, {} as Record<string, string>);
 
-          reset({ ...getValues(), integrationForm: formFields });
+          if (formFields && !Object.hasOwn(formFields, "login")) {
+            setCanRunAction(true);
+
+            reset({ ...getValues(), integrationForm: formFields });
+            return;
+          }
+
+          setCanRunAction(false);
         },
       }
     );
-  }, []);
+  }, [provider]);
 
   const renderIntegrationForm = useCallback(
     () =>
@@ -109,7 +130,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       integrationForm,
       provider,
       audienceId,
-    }: ActionFormType & { audienceId: string }) => {
+    }: ActionFormType & { audienceId: string; provider: ProviderType }) => {
       createQuery(
         { audienceId, actionEndpoint: provider },
         {
@@ -140,7 +161,8 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                     crontab,
                   } = data;
 
-                  const email = await extensionSDK.userAttributeGetItem('email') || ''
+                  const email =
+                    (await extensionSDK.userAttributeGetItem("email")) || "";
                   createActivation(
                     {
                       activationEndpoint: provider,
@@ -181,7 +203,8 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
               isActionRunLoading ||
               isCreateActivationLoading ||
               isCreateQueryLoading ||
-              integrationFormLoading
+              integrationFormLoading ||
+              !canRunAction
             }
             loading={
               isActionRunLoading ||
@@ -190,7 +213,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
             }
             onClick={() => {
               handleSubmit((data) => {
-                handleRunAction({ ...data, audienceId });
+                handleRunAction({ ...data, audienceId, provider });
               })();
             }}
           >
@@ -218,12 +241,15 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                 style={{ rowGap: "20px" }}
                 align={"start"}
               >
-                <FormActionProvider name="provider" />
+                <FormActionProvider
+                  onChange={setProvider}
+                  selectedValue={provider}
+                />
               </Space>
             </SpaceVertical>
             <Divider />
             <SpaceVertical gap="small">
-              <Label fontSize={"medium"}>Google Drive</Label>
+              <Label fontSize={"medium"}>{getProviderLabel(provider)}</Label>
               {renderIntegrationForm()}
             </SpaceVertical>
             <Divider />
@@ -235,8 +261,12 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                 style={{ rowGap: "20px" }}
                 align={"start"}
               >
-                <FormFormatData name="formatDataAs" />
+                <FormFormatData
+                  name="formatDataAs"
+                  selectedProvider={provider}
+                />
               </Space>
+              {formatError ? <Span color="red">{formatError}</Span> : null}
             </SpaceVertical>
           </SpaceVertical>
         </form>

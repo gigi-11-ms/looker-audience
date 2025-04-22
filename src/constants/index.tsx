@@ -98,5 +98,8 @@ export const MAPPINGS_BASE_URL =
 export const CREATE_QUERY_BASE_URL =
   "https://dia-create-looker-query-948043638698.europe-southwest1.run.app";
 
+export const ACTIVATION_BASE_URL =
+  "https://dia-activations-manager-948043638698.europe-southwest1.run.app";
+
 export const LOOKML_MODEL = "thelook_partner";
 export const EXPLORE = "order_items";

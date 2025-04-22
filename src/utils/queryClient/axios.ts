@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  ACTIVATION_BASE_URL,
   AUDIENCES_API_TOKEN,
   AUDIENCES_BASE_URL,
   CREATE_QUERY_BASE_URL,
@@ -24,6 +25,14 @@ export const mappingsAxiosInstance = axios.create({
 
 export const createQueryInstance = axios.create({
   baseURL: CREATE_QUERY_BASE_URL,
+  headers: {
+    Authorization: `Bearer ${AUDIENCES_API_TOKEN}`,
+    "Content-Type": "application/json",
+  },
+});
+
+export const activationInstance = axios.create({
+  baseURL: ACTIVATION_BASE_URL,
   headers: {
     Authorization: `Bearer ${AUDIENCES_API_TOKEN}`,
     "Content-Type": "application/json",

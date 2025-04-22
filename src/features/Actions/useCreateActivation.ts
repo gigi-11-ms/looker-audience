@@ -1,9 +1,8 @@
 import { useMutation } from "react-query";
-import axiosInstance, {
-  createQueryInstance,
+import {
+  activationInstance,
 } from "../../utils/queryClient/axios";
 import { toast } from "react-toastify";
-import { IScheduledPlan } from "@looker/sdk";
 
 interface CreateActivationParams {
   activationEndpoint: string;
@@ -28,7 +27,7 @@ const createActivation = async ({
   schedule,
   scheduledPlanId,
 }: CreateActivationParams) => {
-  const { data } = await axiosInstance.post(`/activations`, {
+  const { data } = await activationInstance.post(`/activations`, {
     activation_endpoint: activationEndpoint,
     query_id: queryId,
     audience_id: audienceId,

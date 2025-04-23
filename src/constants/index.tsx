@@ -8,6 +8,7 @@ export const INTEGRATION_HUB_ID = "1";
 
 export const FACEBOOK_INTEGRATION_ID = "1::facebook_custom_audiences";
 export const GOOGLE_ADS_INTEGRATION_ID = "1::google_ads_customer_match";
+export const GOOGLE_DRIVE_INTEGRATION_ID = "1::google_drive";
 
 export const MONITORING_DASHBOARD_ID = "173";
 
@@ -19,10 +20,13 @@ export const FACEBOOK_ACTION_DESTINATION =
   LOOKER_INTEGRATION + FACEBOOK_INTEGRATION_ID;
 export const GOOGLE_ADS_ACTION_DESTINATION =
   LOOKER_INTEGRATION + GOOGLE_ADS_INTEGRATION_ID;
+export const GOOGLE_DRIVE_DESTINATION =
+  LOOKER_INTEGRATION + GOOGLE_DRIVE_INTEGRATION_ID;
 
 export const PROVIDERS = [
   FACEBOOK_INTEGRATION_ID,
   GOOGLE_ADS_INTEGRATION_ID,
+  GOOGLE_DRIVE_INTEGRATION_ID,
 ] as const;
 
 export const FORMATS = [
@@ -38,6 +42,8 @@ export const FORMATS = [
   "html",
 ] as const;
 
+export const GOOGLE_DRIVE_FORMATS = FORMATS;
+
 export const FACEBOOK_FORMATS = ["json_detail_lite_stream"] as const;
 
 export const GOOGLE_ADS_FORMATS = ["json_label"] as const;
@@ -50,6 +56,18 @@ export type ProviderType = (typeof PROVIDERS)[number];
 export const FORMATS_MAP: Record<ProviderType, FormatsType[]> = {
   "1::facebook_custom_audiences": ["json_detail_lite_stream"],
   "1::google_ads_customer_match": ["json_label"],
+  "1::google_drive": [
+    "txt",
+    "csv",
+    "inline_json",
+    "json",
+    "json_label",
+    "json_detail",
+    "json_detail_lite_stream",
+    "json_bi",
+    "xlsx",
+    "html",
+  ],
 };
 
 // Temp
@@ -89,11 +107,14 @@ const ProvidersIconSrcMap: Record<ProviderType, string> = {
     "https://yt3.googleusercontent.com/ytc/AIdro_k7UlB1KrUyrLE7FjL9yFqGCUn_sRkcNiy_dH6O38JEtM_I=s900-c-k-c0x00ffffff-no-rj",
   "1::facebook_custom_audiences":
     "https://storage.googleapis.com/looker-marketplace.appspot.com/actions/logos/facebook_ads_icon.png",
+  "1::google_drive":
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Google_Drive_icon_%282020%29.svg/1200px-Google_Drive_icon_%282020%29.svg.png",
 };
 
 const ProvidersLabelMap: Record<ProviderType, string> = {
   "1::google_ads_customer_match": "Google Ads Customer Match",
   "1::facebook_custom_audiences": "Facebook Custom Audiences",
+  '1::google_drive': "Google Drive"
 };
 
 export const getFormatIconSrc = (format: FormatsType): string =>

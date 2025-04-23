@@ -128,12 +128,6 @@ const AudiencesTable: FC<{ tableData: IAudiencesResult[] }> = ({
             Send
           </DataTableAction>
           <DataTableAction
-            onClick={() => console.log(id, "add schedule")}
-            disabled={isDeleteAudienceLoading}
-          >
-            Add Schedule
-          </DataTableAction>
-          <DataTableAction
             onClick={() => deleteAudience(id)}
             disabled={isDeleteAudienceLoading}
           >

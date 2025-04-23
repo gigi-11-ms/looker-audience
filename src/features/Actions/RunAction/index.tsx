@@ -2,6 +2,7 @@ import {
   ButtonTransparent,
   DialogLayout,
   Divider,
+  FieldCheckbox,
   Label,
   Space,
   SpaceVertical,
@@ -16,7 +17,6 @@ import {
   LOOKER_INTEGRATION,
   ProviderType,
 } from "../../../constants";
-// import useIntegration from "../useIntegration";
 import useIntegrationForm from "../useIntegrationForm";
 import { FormProvider, useForm } from "react-hook-form";
 import FormTextField from "../../../components/FormTextField/FormTextField";
@@ -31,10 +31,8 @@ import useCreateQuery from "../useCreateQuery";
 import { toast } from "react-toastify";
 import LoadingButton from "../../../components/LoadingButton";
 import useCreateActivation from "../useCreateActivation";
-import {
-  ExtensionContext,
-  ExtensionContext40,
-} from "@looker/extension-sdk-react";
+import { ExtensionContext } from "@looker/extension-sdk-react";
+import { SchedulePicker } from "../Schedule/Schedule";
 
 interface RunActionProps {
   title: string;
@@ -48,10 +46,10 @@ export type ActionFormType = z.infer<
 const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
   const { dispatch } = useModalContext();
   const [canRunAction, setCanRunAction] = useState(false);
+  const [schedule, setSchedule] = useState(false);
   const [provider, setProvider] = useState<ProviderType>(
     () => FACEBOOK_INTEGRATION_ID
   );
-  // const { data: integrationData } = useIntegration(provider);
   const {
     data: integrationFormData,
     mutate,
@@ -77,6 +75,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       title,
       formatDataAs: "",
       integrationForm: {},
+      crontab: "00 1 * * 1-5",
     },
     mode: "onChange",
   });
@@ -88,7 +87,6 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       errors: { formatDataAs: { message: formatError } = {} },
     },
   } = methods;
-  // const { supported_formats: supportedFormats } = integrationData || {};
 
   useEffect(() => {
     mutate(
@@ -130,6 +128,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       integrationForm,
       provider,
       audienceId,
+      crontab,
     }: ActionFormType & { audienceId: string; provider: ProviderType }) => {
       createQuery(
         { audienceId, actionEndpoint: provider },
@@ -149,6 +148,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                     parameters: JSON.stringify(integrationForm),
                   },
                 ],
+                crontab: schedule ? crontab : "",
               },
               {
                 onSuccess: async (data) => {
@@ -267,6 +267,20 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                 />
               </Space>
               {formatError ? <Span color="red">{formatError}</Span> : null}
+            </SpaceVertical>
+            <Divider />
+            <SpaceVertical>
+              <Space>
+                <Label fontSize={"medium"}>Schedule</Label>
+                <FieldCheckbox
+                  label={"Add Schedule"}
+                  checked={schedule}
+                  onChange={(e) => {
+                    setSchedule(e.target.checked);
+                  }}
+                />
+              </Space>
+              {schedule && <SchedulePicker name="crontab" />}
             </SpaceVertical>
           </SpaceVertical>
         </form>

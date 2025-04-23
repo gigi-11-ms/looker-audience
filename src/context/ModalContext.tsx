@@ -82,6 +82,7 @@ const ModalContextProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     <ModalContext.Provider value={values}>
       {children}
       <Dialog
+        width={"70vw"}
         isOpen={open}
         content={content}
         onClose={() => {

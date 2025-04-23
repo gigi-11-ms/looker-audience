@@ -8,6 +8,7 @@ export type IntegrationMutationParams = {
   lookId?: string;
   queryId?: string;
   scheduledPlanDestination: IScheduledPlanDestination[];
+  crontab?: string | null
 };
 
 const useRunOneTimeAction = () => {
@@ -19,6 +20,7 @@ const useRunOneTimeAction = () => {
       scheduledPlanDestination,
       lookId,
       queryId,
+      crontab
     }: IntegrationMutationParams) =>
       core40SDK.ok(
         core40SDK.scheduled_plan_run_once({
@@ -30,6 +32,7 @@ const useRunOneTimeAction = () => {
           require_no_results: false,
           require_results: false,
           scheduled_plan_destination: scheduledPlanDestination,
+          crontab
         })
       ),
   });

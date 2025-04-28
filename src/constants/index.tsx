@@ -1,19 +1,7 @@
-export const EMBED_PREFIX = {
-  DASHBOARD: "embed_dashboard",
-};
-
-export const AUDIENCES_FOLDER_ID = "132";
-
-export const INTEGRATION_HUB_ID = "1";
-
 export const FACEBOOK_INTEGRATION_ID = "1::facebook_custom_audiences";
 export const GOOGLE_ADS_INTEGRATION_ID = "1::google_ads_customer_match";
 export const GOOGLE_DRIVE_INTEGRATION_ID = "1::google_drive";
 
-export const MONITORING_DASHBOARD_ID = "173";
-
-export const API_BASE_URL =
-  "https://europe-west1-ms-gauss-pixel.cloudfunctions.net";
 export const LOOKER_INTEGRATION = "looker-integration://";
 
 export const FACEBOOK_ACTION_DESTINATION =
@@ -127,20 +115,16 @@ export const getProviderIconSrc = (provider: ProviderType): string =>
 export const getProviderLabel = (provider: ProviderType): string =>
   ProvidersLabelMap[provider];
 
-export const AUDIENCES_API_TOKEN =
-  "OtiSSjohDGigDqAFBCHQanVdptwbBqim3JABOtWM/B0=";
+export const AUDIENCES_API_TOKEN = process.env.REACT_APP_API_TOKEN
 
-export const AUDIENCES_BASE_URL =
-  "https://dia-audience-manager-948043638698.europe-southwest1.run.app";
+export const AUDIENCES_BASE_URL = process.env.REACT_APP_AUDIENCES_BASE_URL
 
-export const MAPPINGS_BASE_URL =
-  "https://dia-activations-field-map-948043638698.europe-west1.run.app";
+export const MAPPINGS_BASE_URL = process.env.REACT_APP_MAPPINGS_BASE_URL
 
-export const CREATE_QUERY_BASE_URL =
-  "https://dia-create-looker-query-948043638698.europe-southwest1.run.app";
+export const CREATE_QUERY_BASE_URL = process.env.REACT_APP_CREATE_QUERY_BASE_URL
 
-export const ACTIVATION_BASE_URL =
-  "https://dia-activations-manager-948043638698.europe-southwest1.run.app";
+export const ACTIVATION_BASE_URL = process.env.REACT_APP_ACTIVATION_BASE_URL
 
-export const LOOKML_MODEL = "thelook_partner";
-export const EXPLORE = "order_items";
+export const LOOKML_MODEL = process.env.REACT_APP_LOOKML_MODEL;
+
+export const EXPLORE = process.env.REACT_APP_EXOLORE;

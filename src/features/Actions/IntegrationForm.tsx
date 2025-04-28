@@ -7,7 +7,10 @@ import { SpaceVertical } from "@looker/components";
 import { FormOptionType } from "../../components/FormSelect/FormSelect";
 import { UseMutateFunction } from "react-query";
 import { IntegrationFormParams } from "./useIntegrationForm";
-import FetchPlsSelect from "./RunAction/FetchPlsSelect";
+import FetchPlsSelect from "./ExceptionFields/FetchPlsSelect";
+import LoginCidSelect from "./ExceptionFields/LoginCid";
+import CreateOrAppendSelect from "./ExceptionFields/CreateOrAppend";
+import MobileDeviceSelect from "./ExceptionFields/MobileDevice";
 
 type IntegrationFormType = {
   fields: IDataActionFormField[];
@@ -17,15 +20,29 @@ type IntegrationFormType = {
     IntegrationFormParams,
     unknown
   >;
+  provider: string;
 };
 
 const EXCEPTION_FIELDS = {
   fetchpls: {
     Component: FetchPlsSelect,
   },
+  loginCid: {
+    Component: LoginCidSelect,
+  },
+  createOrAppend: {
+    Component: CreateOrAppendSelect,
+  },
+  mobileDevice: {
+    Component: MobileDeviceSelect,
+  },
 };
 
-const IntegrationForm: FC<IntegrationFormType> = ({ fields, mutate }) => {
+const IntegrationForm: FC<IntegrationFormType> = ({
+  fields,
+  mutate,
+  provider,
+}) => {
   return (
     <SpaceVertical gap={"medium"}>
       {fields.map((field) => {
@@ -44,10 +61,11 @@ const IntegrationForm: FC<IntegrationFormType> = ({ fields, mutate }) => {
           return (
             <Component
               key={fieldName}
-              name={fieldName}
+              name={`integrationForm.${fieldName}`}
               label={fieldLabel}
               options={fieldOptions}
               mutate={mutate}
+              provider={provider}
             />
           );
         }

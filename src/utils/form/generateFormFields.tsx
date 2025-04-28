@@ -4,7 +4,7 @@ import FormTextField from "../../components/FormTextField/FormTextField";
 import FormSelect, {
   FormOptionType,
 } from "../../components/FormSelect/FormSelect";
-import { Button, Link, SpaceVertical } from "@looker/components";
+import OauthLogin from "../../features/Actions/ExceptionFields/OauthLogin";
 
 enum FieldType {
   SELECT = "select",
@@ -53,21 +53,12 @@ const generateFormField = ({ field, preffix }: GenerateFormFieldType) => {
     case FieldType.LOGIN:
     case FieldType.LOGIN_GOOGLE: {
       return (
-        <SpaceVertical
-          gap="medium"
-          align={"center"}
-          key={fieldName}
-          textAlign={"center"}
-        >
-          <span>{description}</span>
-          <Link
-            href={oauth_url || ""}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {fieldLabel}
-          </Link>
-        </SpaceVertical>
+        <OauthLogin
+          fieldName={fieldName}
+          fieldLabel={fieldLabel}
+          description={description}
+          oauthUrl={oauth_url}
+        />
       );
     }
     default: {

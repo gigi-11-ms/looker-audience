@@ -9,6 +9,8 @@ export interface IActivationsResult {
   creator_name: string;
   creator_lastname: string;
   creator_email: string;
+  created_at: string;
+  updated_at: string
 }
 
 const fetchActivations = async () => {

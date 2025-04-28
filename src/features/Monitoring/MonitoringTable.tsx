@@ -3,9 +3,9 @@ import {
   DataTableCell,
   DataTableColumns,
   DataTableItem,
-  doDataTableSort,
+  DateFormat,
 } from "@looker/components";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { IActivationsResult } from "./useActivations";
 
 const MonitoringTable: FC<{ tableData: IActivationsResult[] }> = ({
@@ -62,6 +62,20 @@ const MonitoringTable: FC<{ tableData: IActivationsResult[] }> = ({
       size: "medium",
       type: "string",
     },
+    {
+      canSort: false,
+      id: "created_at",
+      title: "Creation Time",
+      size: "medium",
+      type: "date",
+    },
+    {
+      canSort: false,
+      id: "updated_at",
+      title: "Last Updated",
+      size: "medium",
+      type: "date",
+    },
   ];
 
   const items = tableData.map(
@@ -73,7 +87,12 @@ const MonitoringTable: FC<{ tableData: IActivationsResult[] }> = ({
       creator_lastname: creatorLastname,
       creator_name: creatorName,
       query_id: queryId,
+      created_at: createdAt,
+      updated_at: updatedAt,
     }) => {
+      const updatedAtDate = new Date(updatedAt || 0);
+      const createdAtDate = new Date(createdAt || 0);
+
       return (
         <DataTableItem id={`${queryId}`} key={queryId}>
           <DataTableCell style={{ lineHeight: "40px" }}>
@@ -91,6 +110,12 @@ const MonitoringTable: FC<{ tableData: IActivationsResult[] }> = ({
           <DataTableCell>{creatorEmail}</DataTableCell>
           <DataTableCell>{creatorName}</DataTableCell>
           <DataTableCell>{creatorLastname}</DataTableCell>
+          <DataTableCell>
+            <DateFormat>{createdAtDate}</DateFormat>
+          </DataTableCell>
+          <DataTableCell>
+            <DateFormat>{updatedAtDate}</DateFormat>
+          </DataTableCell>
         </DataTableItem>
       );
     }

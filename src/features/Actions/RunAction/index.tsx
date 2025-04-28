@@ -79,6 +79,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
     },
     mode: "onChange",
   });
+
   const {
     handleSubmit,
     getValues,
@@ -117,9 +118,13 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
       integrationFormLoading ? (
         <Spinner />
       ) : integrationFormFields ? (
-        <IntegrationForm fields={integrationFormFields} mutate={mutate} />
+        <IntegrationForm
+          fields={integrationFormFields}
+          mutate={mutate}
+          provider={provider}
+        />
       ) : null,
-    [integrationFormLoading, integrationFormFields]
+    [integrationFormLoading, integrationFormFields, provider]
   );
 
   const handleRunAction = useCallback(
@@ -178,6 +183,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                     {
                       onSuccess: () => {
                         toast.success("Audience Sent!");
+                        closeModal(dispatch);
                       },
                     }
                   );
@@ -190,7 +196,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
         }
       );
     },
-    []
+    [schedule]
   );
 
   return (

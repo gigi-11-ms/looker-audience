@@ -163,7 +163,6 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                       last_name: lastname = "",
                     } = {},
                     id = "",
-                    crontab,
                   } = data;
 
                   const email =
@@ -177,7 +176,7 @@ const RunAction: FC<RunActionProps> = ({ audienceId, title }) => {
                       creatorLastname: lastname,
                       queryId,
                       scheduledPlanId: id,
-                      schedule: crontab,
+                      schedule: schedule ? crontab : "",
                       creatorEmail: email,
                     },
                     {

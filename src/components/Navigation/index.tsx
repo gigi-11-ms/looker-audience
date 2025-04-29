@@ -7,6 +7,7 @@ import {
   Box,
   Span,
   SpaceVertical,
+  Divider,
 } from "@looker/components";
 import { NavItemType } from "./types";
 import {
@@ -16,6 +17,7 @@ import {
   MONITORING_PAGE,
   SCHEDULED_TASKS_PAGE,
 } from "../../routes/config";
+import { StyledList } from "./styles";
 
 const NavigationElements: NavItemType[] = [
   {
@@ -33,8 +35,8 @@ const NavigationElements: NavItemType[] = [
   },
   {
     name: "Configuration",
-    path: CONFIGURATION_PAGE
-  }
+    path: CONFIGURATION_PAGE,
+  },
 ];
 
 const Navigation = () => {
@@ -54,8 +56,9 @@ const Navigation = () => {
       >
         Create New Audience
       </Button>
+      <Divider style={{ backgroundColor: "#F1F1F1" }} />
       <Box width={"100%"}>
-        <NavList>
+        <StyledList>
           {NavigationElements.map(({ name, path, disabled }) => (
             <ListItem
               onClick={() => handleMenuItemClick(path)}
@@ -68,7 +71,7 @@ const Navigation = () => {
               </Span>
             </ListItem>
           ))}
-        </NavList>
+        </StyledList>
       </Box>
     </SpaceVertical>
   );

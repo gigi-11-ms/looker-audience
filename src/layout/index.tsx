@@ -2,7 +2,7 @@ import React, { PropsWithChildren, FC, useEffect } from 'react';
 import Header from '../components/Header/index';
 import { Box, Space, SpaceVertical } from '@looker/components';
 import Navigation from '../components/Navigation/index';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { AUDIENCES_PAGE } from '../routes/config';
 
 const Layout: FC<PropsWithChildren<any>> = ({ children }) => {
@@ -16,7 +16,7 @@ const Layout: FC<PropsWithChildren<any>> = ({ children }) => {
     <SpaceVertical flex={1} gap={'none'} minHeight={'100dvh'}>
       <Header />
       <Space flex={1} align='stretch' gap='none'>
-        <Box backgroundColor={'rgb(235 235 235)'} p={16} minWidth={300}>
+        <Box backgroundColor={'#fff'} px={40} py={32} minWidth={300}>
           <Navigation />
         </Box>
         <SpaceVertical style={{ overflow: 'auto' }}>{children}</SpaceVertical>

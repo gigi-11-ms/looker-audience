@@ -20,7 +20,7 @@ const CreateAudience = () => {
   if (isLoading)
     return (
       <Space around height={"100%"}>
-        <Spinner color={"rgb(108, 67, 224)"} size={60} />
+        <Spinner color={"key"} size={60} />
       </Space>
     );
 

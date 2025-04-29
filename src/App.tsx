@@ -39,13 +39,18 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { ToastContainer } from "react-toastify";
 
 import "./index.css";
+import defaultTheme from "./theme";
 
 // TODO: fix ts error for router
 export const App = hot(() => {
   return (
     <ExtensionProvider>
       <QueryClientProvider client={queryClient}>
-        <ComponentsProvider loadGoogleFonts resources={i18nResources}>
+        <ComponentsProvider
+          loadGoogleFonts
+          resources={i18nResources}
+          themeCustomizations={defaultTheme}
+        >
           <ModalContextProvider>
             <ToastContainer />
             <Router>

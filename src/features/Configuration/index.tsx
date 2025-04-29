@@ -23,8 +23,8 @@ const Configuration = () => {
     data: { fields: { dimensions } = {}, view_name: viewName } = {},
     isLoading: isExploreLoading,
   } = useExplore({
-    exploreName: EXPLORE,
-    modelName: LOOKML_MODEL,
+    exploreName: EXPLORE || '',
+    modelName: LOOKML_MODEL || '',
   });
 
   const fields = useMemo<IField[]>(
@@ -43,7 +43,7 @@ const Configuration = () => {
   if (isLoading || isExploreLoading)
     return (
       <Space around height={"100%"}>
-        <Spinner color={"rgb(108, 67, 224)"} size={60} />
+        <Spinner color={"key"} size={60} />
       </Space>
     );
 

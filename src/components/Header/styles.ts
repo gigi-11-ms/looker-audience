@@ -10,8 +10,7 @@ export const Container = styled.div`
   align-items: center;
   gap: 16px;
   ${space};
-  padding-inline: 32px;
-  padding-block: 40px;
+  padding: 40px;
   box-shadow: 3px 2px 15px 5px #00000026;
   z-index: 1
 `;

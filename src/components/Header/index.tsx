@@ -8,7 +8,7 @@ const Header = () => {
   const history = useHistory();
   return (
     <Container>
-      <Icon cursor={"pointer"} onClick={() => { history.replace('/')}} />
+      <Icon width={80} height={45} cursor={"pointer"} onClick={() => { history.replace('/')}} />
       <DividerVertical style={{ backgroundColor: "#F1F1F1" }} height={"60%"} />
       <Logo to="/">Audience Management Console</Logo>
     </Container>

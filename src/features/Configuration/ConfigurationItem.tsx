@@ -63,8 +63,6 @@ const ConfigurationItem: FC<ConfigurationItemProps> = ({
             ])
           );
 
-          console.log('88888888', normalizedEndpointFields)
-
           const normalizedData: IMappingUpdateParams = {
             endpointName,
             endpointFields: normalizedEndpointFields,

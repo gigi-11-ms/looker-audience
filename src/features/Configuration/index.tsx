@@ -20,7 +20,7 @@ const Configuration = () => {
   });
 
   const {
-    data: { fields: { dimensions } = {}, view_name: viewName } = {},
+    data: { fields: { dimensions } = {} } = {},
     isLoading: isExploreLoading,
   } = useExplore({
     exploreName: EXPLORE || '',
@@ -30,10 +30,10 @@ const Configuration = () => {
   const fields = useMemo<IField[]>(
     () =>
       dimensions?.map(({ name = "other", label = "Other" }) => ({
-        value: `${viewName}.${name}`,
+        value: name,
         label,
       })) || [],
-    [dimensions, viewName]
+    [dimensions]
   );
 
   const handleTabChange = (newTab: string) => {

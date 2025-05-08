@@ -25,11 +25,6 @@ const NavigationElements: NavItemType[] = [
     path: AUDIENCES_PAGE,
   },
   {
-    name: "Scheduled Tasks",
-    path: SCHEDULED_TASKS_PAGE,
-    disabled: true,
-  },
-  {
     name: "Monitoring",
     path: MONITORING_PAGE,
   },

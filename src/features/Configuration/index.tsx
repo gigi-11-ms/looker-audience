@@ -30,7 +30,7 @@ const Configuration = () => {
   const fields = useMemo<IField[]>(
     () =>
       dimensions?.map(({ name = "other", label = "Other" }) => ({
-        value: name,
+        value: name.split('.')[1],
         label,
       })) || [],
     [dimensions]
